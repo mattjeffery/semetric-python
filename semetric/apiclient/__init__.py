@@ -22,6 +22,90 @@ __status__  = "alpha"
 __version__ = "0.1.0"
 
 import warnings
+import httplib2
+import urllib
+import urlparse
+try:
+    import json
+except ImportError: # pragma: no cover
+    import simplejson as json
+
+class APIError(Exception):
+    pass
+
+class APIClient(object):
+    """
+        API Client
+    """
+
+    API_BASE_URL = "http://api.semetric.com"
+    HTTP_REQUEST = ('GET', 'POST') # these kinds of requests won't be set in _method
+    ANY_GET_REQUEST = ('GET', 'PUT')
+    USER_AGENT = "{0}/{1}".format(__project__, __version__)
+    USER_AGENT_HEADER = {"User-Agent": USER_AGENT}
+
+    def __init__(self, apikey, baseurl=API_BASE_URL):
+        self.apikey = apikey
+        self.baseurl = baseurl.rstrip('/')
+        self.http = httplib2.Http()
+
+    def _request(self, path, method='GET', **params):
+        """
+            Make an API request
+        """
+        base = "{0}/{1}".format(self.baseurl, path)
+        # normalise the method argument
+        method = method.upper().strip()
+
+        # parse the existing url
+        urlparts = urlparse.urlparse(base)
+        qstr = urlparse.parse_qs(urlparts.query)
+
+        # add the token to the query string
+        qstr['token'] = self.apikey
+        if method not in APIClient.HTTP_REQUEST:
+            qstr['_method'] = method
+        else:
+            try:
+                del qstr['_method']
+            except KeyError:
+                pass
+
+        if method in APIClient.ANY_GET_REQUEST:
+            # if it's a get request then update the query string with
+            # the params
+            qstr.update(params)
+            # all of the params go in the query string
+            query_string = urllib.urlencode(qstr)
+            # reconstruct the url
+            url = urlparse.urlunparse((urlparts.scheme,
+                                   urlparts.netloc,
+                                   urlparts.path,
+                                   urlparts.params,
+                                   query_string,
+                                   "")) # empty fragment
+            resp, content = self.http.request(url, "GET", headers=self.USER_AGENT_HEADER)
+        else:
+            # all of the params go in the query string
+            query_string = urllib.urlencode(qstr)
+            # reconstruct the url
+            url = urlparse.urlunparse((urlparts.scheme,
+                                   urlparts.netloc,
+                                   urlparts.path,
+                                   urlparts.params,
+                                   query_string,
+                                   "")) # empty fragment
+            resp, content = self.http.request(url, "POST", urllib.urlencode(params), headers=self.USER_AGENT_HEADER)
+
+        status = int(resp['status'])
+
+        if status != 200:
+            raise APIError, "non 200 response"
+
+        return resp, json.loads(content)
+
+    def __call__(self, path):
+        pass
 
 class Entity(object):
     """

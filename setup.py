@@ -56,7 +56,9 @@ if __name__ == "__main__":
         packages=find_packages(exclude=['tests']),
         include_package_data=True,
         test_suite='nose.collector',
-        tests_require=['nose>=1.3.0', pkg_unittest2],
+        tests_require=['nose>=1.3.0',
+                       'mock',
+                       pkg_unittest2],
         zip_safe=False,
         platforms='any',
         classifiers=[
