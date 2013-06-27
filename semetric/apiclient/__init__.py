@@ -16,10 +16,10 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-__project__ = u"semetric-python"
-__author__  = u"Matt Jeffery <matt@clan.se>"
-__status__  = u"alpha"
-__version__ = u"0.1.0"
+__project__ = "semetric-python"
+__author__  = "Matt Jeffery <matt@clan.se>"
+__status__  = "alpha"
+__version__ = "0.1.0"
 
 import warnings
 

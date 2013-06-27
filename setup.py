@@ -17,6 +17,7 @@
 #  MA 02110-1301, USA.
 
 import os
+import sys
 from semetric.apiclient import __version__
 from setuptools import setup, find_packages
 
@@ -32,6 +33,11 @@ def read(fname):
     return fh.read()
 
 if __name__ == "__main__":
+
+    extra = {}
+    if sys.version_info >= (3,):
+        extra['use_2to3'] = True
+
     setup(
         name="semetric.apiclient",
         version=__version__,
@@ -56,10 +62,15 @@ if __name__ == "__main__":
             "Intended Audience :: Developers",
             "Operating System :: OS Independent",
             "Programming Language :: Python",
+            "Programming Language :: Python :: 2.6",
+            "Programming Language :: Python :: 2.7",
+            "Programming Language :: Python :: 3.2",
+            "Programming Language :: Python :: 3.3",
             "Topic :: Software Development :: Libraries :: Python Modules",
         ],
         entry_points = {'console_scripts': [
                 'semetric-api = semetric.apiclient:main',
             ],
-        }
+        },
+        **extra
     )
