@@ -10,6 +10,10 @@ matrix:
     - python:
       - "3.2"
       - "3.3"
+notifications:
+  email:
+    on_success: change
+    on_failure: change
 install:
   - pip install -r requirements/requirements.txt --use-mirrors
     # Install any Python 3 or Python 2/PyPy specific requirements
