@@ -37,6 +37,9 @@ if __name__ == "__main__":
     extra = {}
     if sys.version_info >= (3,):
         extra['use_2to3'] = True
+        pkg_unittest2 = 'unittest2py3k'
+    else:
+        pkg_unittest2 = 'unittest2'
 
     setup(
         name="semetric.apiclient",
@@ -53,7 +56,7 @@ if __name__ == "__main__":
         packages=find_packages(exclude=['tests']),
         include_package_data=True,
         test_suite='nose.collector',
-        tests_require=['nose>=1.3.0', 'unittest2'],
+        tests_require=['nose>=1.3.0', pkg_unittest2],
         zip_safe=False,
         platforms='any',
         classifiers=[
