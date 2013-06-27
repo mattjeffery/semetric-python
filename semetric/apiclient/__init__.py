@@ -50,7 +50,7 @@ class Entity(object):
             entity_class = subclasses[apiclass]
         except KeyError:
             entity_class = Entity
-            warnings.warn("Could not map api class `{0}' to a python class, using Entity".format(apiclass))
+            warnings.warn("Could not map api class `{0}' to a python class, using Entity".format(apiclass), stacklevel=2)
 
         return entity_class(**entity_dict)
 
