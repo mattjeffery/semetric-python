@@ -17,7 +17,7 @@
 #  MA 02110-1301, USA.
 
 import os
-import datetime
+from semetric.apiclient import __version__
 from setuptools import setup, find_packages
 
 # Utility function to read the README file, etc..
@@ -34,7 +34,7 @@ def read(fname):
 if __name__ == "__main__":
     setup(
         name="semetric.apiclient",
-        version="0.0.1",
+        version=__version__,
         author="Matt Jeffery",
         author_email="matt@clan.se",
         # read the install requirements from the requirements.txt
