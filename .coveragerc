@@ -8,8 +8,6 @@ exclude_lines =
 
 [run]
 omit =
-[run]
-omit =
     */python?.?/*
     */lib-python/?.?/*.py
     */lib_pypy/_*.py
