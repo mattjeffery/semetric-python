@@ -31,34 +31,35 @@ def read(fname):
         raise
     return fh.read()
 
-setup(
-    name="semetric.apiclient",
-    version="0.0.1",
-    author="Matt Jeffery",
-    author_email="matt@clan.se",
-    # read the install requirements from the requirements.txt
-    install_requires=read("requirements.txt").splitlines(),
-    description=("Wrapper for the Semetric API"),
-    long_description=read('README.md'),
-    url="http://developer.musicmetric.com",
-    license="PSF",
-    namespace_packages=['semetric'],
-    packages=find_packages(exclude=['tests']),
-    include_package_data=True,
-    test_suite='nose.collector',
-    tests_require=['nose>=1.3.0', 'unittest2'],
-    zip_safe=False,
-    platforms='any',
-    classifiers=[
-        "Development Status :: 3 - Alpha",
-        "Framework :: Setuptools Plugin",
-        "Intended Audience :: Developers",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python",
-        "Topic :: Software Development :: Libraries :: Python Modules",
-    ],
-    entry_points = {'console_scripts': [
-            'semetric-api = semetric.apiclient:main',
+if __name__ == "__main__":
+    setup(
+        name="semetric.apiclient",
+        version="0.0.1",
+        author="Matt Jeffery",
+        author_email="matt@clan.se",
+        # read the install requirements from the requirements.txt
+        install_requires=read("requirements.txt").splitlines(),
+        description=("Wrapper for the Semetric API"),
+        long_description=read('README.md'),
+        url="http://developer.musicmetric.com",
+        license="PSF",
+        namespace_packages=['semetric'],
+        packages=find_packages(exclude=['tests']),
+        include_package_data=True,
+        test_suite='nose.collector',
+        tests_require=['nose>=1.3.0', 'unittest2'],
+        zip_safe=False,
+        platforms='any',
+        classifiers=[
+            "Development Status :: 3 - Alpha",
+            "Framework :: Setuptools Plugin",
+            "Intended Audience :: Developers",
+            "Operating System :: OS Independent",
+            "Programming Language :: Python",
+            "Topic :: Software Development :: Libraries :: Python Modules",
         ],
-    }
-)
+        entry_points = {'console_scripts': [
+                'semetric-api = semetric.apiclient:main',
+            ],
+        }
+    )

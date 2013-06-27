@@ -3,13 +3,15 @@ python:
   - "2.5"
   - "2.6"
   - "2.7"
+  - "pypy"
 install:
   - pip install -r requirements.txt --use-mirrors
   - pip install . --use-mirrors
-  # install the unittest2 module for python>=2.5 compatibility
-  - pip install unittest2 coveralls coverage --use-mirrors
-# run the tests
+    # install the unittest2 module for python>=2.5 compatibility
+  - pip install unittest2 coverage --use-mirrors
+  - if [[ $TRAVIS_PYTHON_VERSION != "2.5" ]]; then pip install coveralls --use-mirrors && export COVERALLS=1; fi
 script:
-    coverage run --source=semetric.apiclient setup.py test
+    # run the tests with coverage
+  - nosetests --quiet --with-coverage --cover-package semetric.apiclient
 after_success:
-    coveralls
+  - if [[ $COVERALLS ]]; then coveralls; fi
