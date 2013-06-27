@@ -16,10 +16,10 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-import unittest
+import unittest2
 import semetric.apiclient
 
-class TestEntity(unittest.TestCase):
+class TestEntity(unittest2.TestCase):
 
     def test_factory(self):
         """
@@ -34,5 +34,5 @@ class TestEntity(unittest.TestCase):
         assert isinstance(semetric.apiclient.Entity.entity_factory({}), semetric.apiclient.Entity), "a blank Entity should be created"
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest2.main()
 

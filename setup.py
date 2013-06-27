@@ -28,7 +28,7 @@ setup(
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     test_suite='nose.collector',
-    tests_require=['nose>=1.3.0'],
+    tests_require=['nose>=1.3.0', 'unittest2'],
     classifiers=[],
     zip_safe=False,
     entry_points = {'console_scripts': [
