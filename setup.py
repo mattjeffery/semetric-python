@@ -2,18 +2,24 @@ import os
 import datetime
 from setuptools import setup, find_packages
 
-# Utility function to read the README file.
+# Utility function to read the README file, etc..
 def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    fh = None
+    try:
+        fh = open(os.path.join(os.path.dirname(__file__), fname))
+    except:
+        if fh:
+            fh.close()
+        raise
+    return fh.read()
 
 setup(
     name="semetric.apiclient",
     version="0.0.1",
     author="Matt Jeffery",
     author_email="matt@clan.se",
-    install_requires=[
-        'httplib2',
-    ],
+    # read the install requirements from the requirements.txt
+    install_requires=read("requirements.txt").splitlines(),
     description=("Wrapper for the Semetric API"),
     long_description=read('README.md'),
     url="http://developer.musicmetric.com",
