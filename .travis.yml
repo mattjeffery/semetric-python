@@ -3,7 +3,6 @@ python:
   - "2.6"
   - "2.7"
   - "pypy"
-  - "3.1"
   - "3.2"
   - "3.3"
 matrix:
@@ -17,14 +16,14 @@ install:
     # Install the semetric-python library
   - pip install . --use-mirrors
     # Install unittest2 if python2 is being used
-  - [[ "${TRAVIS_PYTHON_VERSION:0:1}" -eq "2" ]] && pip install unittest2 --use-mirrors
+  - if [[ "${TRAVIS_PYTHON_VERSION:0:1}" -eq "2" ]]; then pip install unittest2 --use-mirrors; fi
     # Install unittest2py3k if python3 is being used
-  - [[ "${TRAVIS_PYTHON_VERSION:0:1}" -eq "3" ]] && pip install unittest2py3k --use-mirrors
+  - if [[ "${TRAVIS_PYTHON_VERSION:0:1}" -eq "3" ]]; then pip install unittest2py3k --use-mirrors; fi
     # Install coveralls if python>2.5
-  - [[ $TRAVIS_PYTHON_VERSION != "2.5" ]] && pip install coveralls --use-mirrors && export COVERALLS=1
+  - if [[ $TRAVIS_PYTHON_VERSION != "2.5" ]]; then pip install coveralls --use-mirrors && export COVERALLS=1; fi
 script:
     # run the tests with coverage
   - nosetests --quiet --with-coverage --cover-package semetric.apiclient
 after_success:
   # run coveralls if it is installed
-  - [[ $COVERALLS ]] && coveralls
+  - if [[ $COVERALLS ]]; then coveralls; fi
