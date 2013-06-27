@@ -21,7 +21,7 @@ install:
   - if [[ "${TRAVIS_PYTHON_VERSION}" != "2.5" ]]; then pip install coveralls --use-mirrors && export COVERALLS=1; fi
 script:
     # run the tests with coverage
-  - nosetests --quiet --with-coverage --cover-package semetric.apiclient
+  - nosetests --with-coverage --cover-package semetric.apiclient
 after_success:
   # run coveralls if it is installed
   - if [[ $COVERALLS ]]; then coveralls; fi

@@ -8,7 +8,6 @@ exclude_lines =
 
 [run]
 omit =
-    */python?.?/*
     */lib-python/?.?/*.py
     */lib_pypy/_*.py
     */site-packages/nose/*
