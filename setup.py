@@ -35,11 +35,22 @@ def read(fname):
 if __name__ == "__main__":
 
     extra = {}
+    requirements = read("requirements/requirements.txt").splitlines()
+
+    # unittest2 backport for py3
     if sys.version_info >= (3,):
         extra['use_2to3'] = True
         pkg_unittest2 = 'unittest2py3k'
     else:
         pkg_unittest2 = 'unittest2'
+
+    # Python 2 extra requirements
+    if sys.version_info < (3,):
+        requirements.append(read("requirements/requirements_py2.txt").splitlines())
+
+    # Python 3 extra requirements
+    if sys.version_info >= (3,):
+        requirements.append(read("requirements/requirements_py3.txt").splitlines())
 
     setup(
         name="semetric.apiclient",
@@ -47,7 +58,7 @@ if __name__ == "__main__":
         author="Matt Jeffery",
         author_email="matt@clan.se",
         # read the install requirements from the requirements.txt
-        install_requires=read("requirements.txt").splitlines(),
+        install_requires=requirements,
         description=("Wrapper for the Semetric API"),
         long_description=read('README.md'),
         url="http://developer.musicmetric.com",
