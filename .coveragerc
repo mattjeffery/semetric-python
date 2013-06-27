@@ -9,6 +9,9 @@ exclude_lines =
 [run]
 omit =
     */lib-python/?.?/*.py
+    */lib/python?.?/*
     */lib_pypy/_*.py
-    */site-packages/nose/*
-    */unittest2/*
+    */site-packages/nose*
+    */site-packages/httplib2*
+    */site-packages/mock*
+    */site-packages/unittest2*

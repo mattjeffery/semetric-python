@@ -21,10 +21,17 @@ __author__  = "Matt Jeffery <matt@clan.se>"
 __status__  = "alpha"
 __version__ = "0.1.0"
 
+import sys
 import warnings
 import httplib2
-import urllib
-import urlparse
+
+# Special imports for Python 3
+if sys.version_info >= (3,):
+    from urllib.parse import urlparse, urlunparse, urlencode, parse_qs
+else:
+    from urllib import urlencode
+    from urlparse import urlparse, urlunparse, parse_qs
+
 try:
     import json
 except ImportError: # pragma: no cover
@@ -58,8 +65,8 @@ class APIClient(object):
         method = method.upper().strip()
 
         # parse the existing url
-        urlparts = urlparse.urlparse(base)
-        qstr = urlparse.parse_qs(urlparts.query)
+        urlparts = urlparse(base)
+        qstr = parse_qs(urlparts.query)
 
         # add the token to the query string
         qstr['token'] = self.apikey
@@ -76,9 +83,9 @@ class APIClient(object):
             # the params
             qstr.update(params)
             # all of the params go in the query string
-            query_string = urllib.urlencode(qstr)
+            query_string = urlencode(qstr)
             # reconstruct the url
-            url = urlparse.urlunparse((urlparts.scheme,
+            url = urlunparse((urlparts.scheme,
                                    urlparts.netloc,
                                    urlparts.path,
                                    urlparts.params,
@@ -87,20 +94,20 @@ class APIClient(object):
             resp, content = self.http.request(url, "GET", headers=self.USER_AGENT_HEADER)
         else:
             # all of the params go in the query string
-            query_string = urllib.urlencode(qstr)
+            query_string = urlencode(qstr)
             # reconstruct the url
-            url = urlparse.urlunparse((urlparts.scheme,
+            url = urlunparse((urlparts.scheme,
                                    urlparts.netloc,
                                    urlparts.path,
                                    urlparts.params,
                                    query_string,
                                    "")) # empty fragment
-            resp, content = self.http.request(url, "POST", urllib.urlencode(params), headers=self.USER_AGENT_HEADER)
+            resp, content = self.http.request(url, "POST", urlencode(params), headers=self.USER_AGENT_HEADER)
 
         status = int(resp['status'])
 
         if status != 200:
-            raise APIError, "non 200 response"
+            raise APIError("An unknown error occurred")
 
         return resp, json.loads(content)
 
