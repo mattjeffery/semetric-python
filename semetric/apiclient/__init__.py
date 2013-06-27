@@ -47,7 +47,7 @@ class APIClient(object):
 
     API_BASE_URL = "http://api.semetric.com"
     HTTP_REQUEST = ('GET', 'POST') # these kinds of requests won't be set in _method
-    ANY_GET_REQUEST = ('GET', 'PUT')
+    ANY_GET_REQUEST = ('GET',)
     USER_AGENT = "{0}/{1}".format(__project__, __version__)
     USER_AGENT_HEADER = {"User-Agent": USER_AGENT}
 

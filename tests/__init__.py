@@ -110,6 +110,23 @@ class TestAPIClient(unittest2.TestCase):
                                          "", # no data
                                          headers=self.EXPECT_USER_AGENT)
 
+    def test_put_request(self):
+        """
+            Test that a POST request is made an behaves as expected
+        """
+
+        apiclient = APIClient(self.APIKEY)
+
+        # Make the api response
+        with patch.object(apiclient.http, 'request', autospec=True) as api_mock:
+            api_mock.return_value = ({'status': 200}, "{}")
+            apiclient._request("moo", method="PUT")
+
+        api_mock.assert_called_once_with("http://api.semetric.com/moo?token={0}&_method=PUT".format(self.APIKEY),
+                                         "POST",
+                                         "", # no data
+                                         headers=self.EXPECT_USER_AGENT)
+
 
 if __name__ == '__main__':
     unittest2.main()
