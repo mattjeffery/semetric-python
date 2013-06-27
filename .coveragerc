@@ -10,7 +10,7 @@ exclude_lines =
 omit =
     */lib-python/?.?/*.py
     */lib/python?.?/*
-    */lib_pypy/_*.py
+    */lib_pypy/*.py
     */site-packages/nose*
     */site-packages/httplib2*
     */site-packages/mock*
