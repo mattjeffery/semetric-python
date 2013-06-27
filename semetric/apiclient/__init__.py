@@ -26,7 +26,7 @@ import warnings
 import httplib2
 
 # Special imports for Python 3
-if sys.version_info >= (3,):
+if sys.version_info >= (3,): # pragma: no cover
     from urllib.parse import urlparse, urlunparse, urlencode, parse_qs
 else:
     from urllib import urlencode
