@@ -22,7 +22,7 @@ from mock import patch
 
 from semetric.apiclient.entity import *
 
-from .consts import ARTIST_ADELE, UNKNOWN, ARTIST_LIST
+from .consts import ARTIST_ADELE, UNKNOWN, ARTIST_LIST, DENSE_TIMESERIES
 
 class TestEntity(unittest2.TestCase):
 
@@ -66,3 +66,22 @@ class TestListEntity(unittest2.TestCase):
             assert isinstance(item, Artist), "each item in the list should be an Artist"
         for item in alist[:]:
             assert isinstance(item, Artist), "each item in the slice should be an Artist"
+
+class TestDenseEntity(unittest2.TestCase):
+
+    def test_entity_factory_dense(self):
+        """
+            Test creating an Entity from an entity dict
+        """
+        timeseries = Entity.entity_factory(DENSE_TIMESERIES)
+        assert isinstance(timeseries, DenseTimeseries), "a DenseTimeseries entity should be created"
+        assert len(timeseries) == 5, "the data should have 5 items in it"
+        assert type(timeseries[0]) is tuple, "the data items should be tuples"
+
+        # Test that the timestamps are calculated correctly
+        expected_timestamp = timeseries.start_time
+        for timestamp, data in timeseries:
+            assert timestamp == expected_timestamp, "expected time stamp does not match"
+            expected_timestamp += timeseries.period
+        # Make sure the end_time is correct
+        assert timeseries.end_time == timestamp, "expected end time stamp does not match last time stamp"

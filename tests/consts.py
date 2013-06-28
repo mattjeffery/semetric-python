@@ -46,3 +46,8 @@ ARTIST_LIST = { "entities": [{ "class": "artist",
                                "id": "e78fc40de81a4e01babf1d23deaf2ca0",
                                "name": "50 Cent" }
                             ]}
+
+DENSE_TIMESERIES = { "data": [1,2,3,4,5],
+                     "period": 86400,
+                     "start_time": 1258588800,
+                     "end_time": 1258934400 }

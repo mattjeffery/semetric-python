@@ -19,7 +19,7 @@
 import sys
 import warnings
 
-__all__ = ['Entity', 'Artist', 'List']
+__all__ = ['Entity', 'Artist', 'List', 'DenseTimeseries']
 
 # Special imports for Python 3
 if sys.version_info >= (3,): # pragma: no cover
@@ -109,6 +109,46 @@ class List(Entity):
     def __iter__(self):
         """
             Simple iterator
+        """
+        for i in xrange(len(self)):
+            yield self[i]
+
+class DenseTimeseries(Entity):
+    __apiclass__ = "dense"
+
+    def __init__(self, data, start_time, end_time, period, **kwargs):
+        self.id = None
+        self.name = None
+
+        self.start_time = start_time
+        self.end_time = end_time
+        self.period = period
+        # original and processed data
+        self._data = data
+        self.data = self._timeseries(self._data)
+        self.extras = kwargs
+
+    def _timeseries(self, data):
+        """
+            Generate the timeseries data
+        """
+        return list(zip(range(self.start_time, self.end_time+self.period, self.period), data))
+
+    def __len__(self):
+        """
+            Get the length of the data
+        """
+        return len(self.data)
+
+    def __getitem__(self, index):
+        """
+            Get an item or item slice from the data
+        """
+        return self.data[index]
+
+    def __iter__(self):
+        """
+            Simple iterator for the data
         """
         for i in xrange(len(self)):
             yield self[i]
