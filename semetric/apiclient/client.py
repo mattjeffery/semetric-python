@@ -49,9 +49,13 @@ class APIClient(object):
     USER_AGENT = "{0}/{1}".format(__project__, __version__)
     USER_AGENT_HEADER = {"User-Agent": USER_AGENT}
 
-    def __init__(self, apikey, baseurl=API_BASE_URL):
+    def __init__(self, apikey, baseurl=None):
+        """
+            API Key required
+            Baseurl default = http://api.semetric.com
+        """
         self.apikey = apikey
-        self.baseurl = baseurl.rstrip('/')
+        self.baseurl = (baseurl or self.API_BASE_URL).rstrip('/')
         self.http = httplib2.Http()
 
     @staticmethod
