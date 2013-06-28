@@ -18,12 +18,15 @@
 
 import sys
 import warnings
+import logging
 
 __all__ = ['Entity', 'Artist', 'List', 'DenseTimeseries']
 
 # Special imports for Python 3
 if sys.version_info >= (3,): # pragma: no cover
     xrange = range
+
+log = logging.getLogger(__name__)
 
 class Entity(object):
     """
