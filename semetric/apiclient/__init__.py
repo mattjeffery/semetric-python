@@ -28,7 +28,7 @@ import httplib2
 # Special imports for Python 3
 if sys.version_info >= (3,): # pragma: no cover
     from urllib.parse import urlparse, urlunparse, urlencode, parse_qs
-else:
+else: # pragma: no cover
     from urllib import urlencode
     from urlparse import urlparse, urlunparse, parse_qs
 
@@ -36,6 +36,8 @@ try:
     import json
 except ImportError: # pragma: no cover
     import simplejson as json
+
+from operator import itemgetter
 
 class APIError(Exception):
     pass
@@ -55,6 +57,14 @@ class APIClient(object):
         self.apikey = apikey
         self.baseurl = baseurl.rstrip('/')
         self.http = httplib2.Http()
+
+    @staticmethod
+    def urlencode(qsdata):
+        """
+            URL Encode the params in a fixed order, sorted by key.
+        """
+        qsitems = sorted(qsdata.items(), key=itemgetter(0))
+        return urlencode(qsitems)
 
     def _request(self, path, method='GET', **params):
         """
@@ -83,25 +93,25 @@ class APIClient(object):
             # the params
             qstr.update(params)
             # all of the params go in the query string
-            query_string = urlencode(qstr)
+            query_string = APIClient.urlencode(qstr)
             # reconstruct the url
             url = urlunparse((urlparts.scheme,
-                                   urlparts.netloc,
-                                   urlparts.path,
-                                   urlparts.params,
-                                   query_string,
-                                   "")) # empty fragment
+                              urlparts.netloc,
+                              urlparts.path,
+                              urlparts.params,
+                              query_string,
+                              "")) # empty fragment
             resp, content = self.http.request(url, "GET", headers=self.USER_AGENT_HEADER)
         else:
             # all of the params go in the query string
-            query_string = urlencode(qstr)
+            query_string = APIClient.urlencode(qstr)
             # reconstruct the url
             url = urlunparse((urlparts.scheme,
-                                   urlparts.netloc,
-                                   urlparts.path,
-                                   urlparts.params,
-                                   query_string,
-                                   "")) # empty fragment
+                              urlparts.netloc,
+                              urlparts.path,
+                              urlparts.params,
+                              query_string,
+                              "")) # empty fragment
             resp, content = self.http.request(url, "POST", urlencode(params), headers=self.USER_AGENT_HEADER)
 
         status = int(resp['status'])

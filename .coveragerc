@@ -4,14 +4,12 @@ exclude_lines =
     def __repr__
     raise AssertionError
     raise NotImplementedError
-    if __name__ == .__main__.:
+    __name__ == .__main__.
 
 [run]
 omit =
     */lib-python/?.?/*.py
-    */lib/python?.?/*
+    */lib/python?.?/*.py
     */lib_pypy/*.py
-    */site-packages/nose*
-    */site-packages/httplib2*
-    */site-packages/mock*
-    */site-packages/unittest2*
+    */pypy/*.py
+    tests/*
