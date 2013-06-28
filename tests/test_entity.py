@@ -20,9 +20,9 @@ import unittest2
 import warnings
 from mock import patch
 
-from semetric.apiclient.entity import Entity, Artist
+from semetric.apiclient.entity import *
 
-from .consts import ARTIST_ADELE, UNKNOWN
+from .consts import ARTIST_ADELE, UNKNOWN, ARTIST_LIST
 
 class TestEntity(unittest2.TestCase):
 
@@ -51,3 +51,18 @@ class TestEntity(unittest2.TestCase):
             assert len(w) == 1, "only one warning should have been generate"
             assert issubclass(w[-1].category, UserWarning), "a UserWarning should have been generated"
             assert "Could not map api" in str(w[-1].message), "The warning should tell the user than the api class cannot be mapped"
+
+class TestListEntity(unittest2.TestCase):
+
+    def test_entity_factory_artist(self):
+        """
+            Test creating an Entity from an entity dict
+        """
+        alist = Entity.entity_factory(ARTIST_LIST)
+        assert isinstance(alist, List), "a List entity should be created"
+        assert len(alist) == 1, "the list should have one item in it"
+        assert isinstance(alist[0], Artist), "the first item in the list should be an Artist"
+        for item in alist:
+            assert isinstance(item, Artist), "each item in the list should be an Artist"
+        for item in alist[:]:
+            assert isinstance(item, Artist), "each item in the slice should be an Artist"

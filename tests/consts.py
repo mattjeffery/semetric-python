@@ -41,3 +41,8 @@ MOO_JSON = json.dumps({"response": "moooo",
 
 ERROR_JSON = json.dumps({"error": { "msg": "Unknown Error", "code": 500 },
                          "success": False })
+
+ARTIST_LIST = { "entities": [{ "class": "artist",
+                               "id": "e78fc40de81a4e01babf1d23deaf2ca0",
+                               "name": "50 Cent" }
+                            ]}

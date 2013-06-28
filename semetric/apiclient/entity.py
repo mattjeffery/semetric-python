@@ -16,7 +16,14 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
+import sys
 import warnings
+
+__all__ = ['Entity', 'Artist', 'List']
+
+# Special imports for Python 3
+if sys.version_info >= (3,): # pragma: no cover
+    xrange = range
 
 class Entity(object):
     """
@@ -40,7 +47,17 @@ class Entity(object):
     def entity_factory(entity_dict):
         subclasses = Entity.subclass_mapping()
 
-        apiclass = entity_dict.get('class', 'entity')
+        apiclass = entity_dict.get('class')
+
+        if apiclass is None:
+            # special cases for lists, timeseries, etc.
+            if 'entities' in entity_dict: # list
+                apiclass = "list"
+            elif 'data' in entity_dict: # time series
+                apiclass = 'dense'
+            else: # fall back
+                apiclass = 'entity'
+
         try:
             entity_class = subclasses[apiclass]
         except KeyError:
@@ -63,3 +80,35 @@ class Artist(Entity):
         self.name = name
         self.extras = kwargs
 
+class List(Entity):
+    __apiclass__ = "list"
+
+    def __init__(self, entities, **kwargs):
+        self.id = None
+        self.name = None
+        self.entities = entities
+        self.extras = kwargs
+
+    def __len__(self):
+        """
+            Get the length of the list
+        """
+        return len(self.entities)
+
+    def __getitem__(self, index):
+        """
+            Get an item or item slice from the list
+        """
+        if isinstance(index, slice):
+            # return the entity_factory results for each item in the
+            # slice
+            return map(Entity.entity_factory, self.entities[index])
+        else:
+            return Entity.entity_factory(self.entities[index])
+
+    def __iter__(self):
+        """
+            Simple iterator
+        """
+        for i in xrange(len(self)):
+            yield self[i]
