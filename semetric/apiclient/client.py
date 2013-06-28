@@ -126,7 +126,7 @@ class APIClient(object):
             response = envelope["response"]
 
             if isinstance(response, dict):
-                print Entity.entity_factory(response)
+                print(Entity.entity_factory(response))
             elif isinstance(response, basestring):
                 return response
 

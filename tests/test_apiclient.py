@@ -24,7 +24,7 @@ from semetric.apiclient.client import APIClient
 from semetric.apiclient.exc import APIError
 from semetric.apiclient.entity import Artist
 
-from consts import (
+from .consts import (
     APIKEY,
     EXPECT_USER_AGENT,
     ARTIST_ADELE_JSON,

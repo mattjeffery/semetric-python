@@ -22,7 +22,7 @@ from mock import patch
 
 from semetric.apiclient.entity import Entity, Artist
 
-from consts import ARTIST_ADELE, UNKNOWN
+from .consts import ARTIST_ADELE, UNKNOWN
 
 class TestEntity(unittest2.TestCase):
 
