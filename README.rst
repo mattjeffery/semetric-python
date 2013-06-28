@@ -3,14 +3,10 @@ semetric-python
 ***************
 
 .. image:: https://secure.travis-ci.org/mattjeffery/semetric-python.png?branch=master
-   :width: 82px
-   :height: 13px
    :alt: Travis CI build report
    :target: https://travis-ci.org/mattjeffery/semetric-python
 
 .. image:: https://coveralls.io/repos/mattjeffery/semetric-python/badge.png?branch=master
-   :width: 82px
-   :height: 13px
    :alt: Coverage Status
    :target: https://coveralls.io/r/mattjeffery/semetric-python?branch=master
 
