@@ -64,7 +64,7 @@ if __name__ == "__main__":
         url="http://developer.musicmetric.com",
         license="LGPLv2+",
         namespace_packages=['semetric'],
-        packages=find_packages(exclude=['tests']),
+        packages=find_packages(exclude=['tests', 'examples']),
         include_package_data=True,
         test_suite='nose.collector',
         tests_require=['nose>=1.3.0',
@@ -88,6 +88,9 @@ if __name__ == "__main__":
         entry_points = {'console_scripts': [
                 'semetric-api = semetric.apiclient:main',
             ],
+        },
+        extras_require = {
+            "examples": ["argparse"],
         },
         **extra
     )
