@@ -35,3 +35,9 @@ ARTIST_ADELE_JSON = json.dumps({"response": ARTIST_ADELE,
                            "success": True })
 
 UNKNOWN = {"class": "unknown"}
+
+MOO_JSON = json.dumps({"response": "moooo",
+                       "success": True })
+
+ERROR_JSON = json.dumps({"error": { "msg": "Unknown Error", "code": 500 },
+                         "success": False })

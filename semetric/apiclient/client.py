@@ -22,6 +22,7 @@ import httplib2
 # Special imports for Python 3
 if sys.version_info >= (3,): # pragma: no cover
     from urllib.parse import urlparse, urlunparse, urlencode, parse_qs
+    basestring = str
 else: # pragma: no cover
     from urllib import urlencode
     from urlparse import urlparse, urlunparse, parse_qs
@@ -126,7 +127,7 @@ class APIClient(object):
             response = envelope["response"]
 
             if isinstance(response, dict):
-                print(Entity.entity_factory(response))
+                return Entity.entity_factory(response)
             elif isinstance(response, basestring):
                 return response
 

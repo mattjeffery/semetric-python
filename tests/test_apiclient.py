@@ -16,6 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
+import sys
 import unittest2
 import warnings
 from mock import patch
@@ -28,8 +29,14 @@ from .consts import (
     APIKEY,
     EXPECT_USER_AGENT,
     ARTIST_ADELE_JSON,
-    ARTIST_ADELE_ID
+    ARTIST_ADELE_ID,
+    MOO_JSON,
+    ERROR_JSON
 )
+
+# Base string type for Python3
+if sys.version_info >= (3,): # pragma: no cover
+    basestring = str
 
 class TestAPIClient(unittest2.TestCase):
 
@@ -110,8 +117,52 @@ class TestAPIClient(unittest2.TestCase):
         # Make the api response
         with patch.object(apiclient.http, 'request', autospec=True) as api_mock:
             api_mock.return_value = ({'status': 200}, ARTIST_ADELE_JSON)
-            apiclient.request("/artist/"+ARTIST_ADELE_ID)
+            resp = apiclient.request("/artist/"+ARTIST_ADELE_ID)
+            assert isinstance(resp, Artist)
 
         api_mock.assert_called_once_with("http://api.semetric.com/artist/{0}?token={1}".format(ARTIST_ADELE_ID, APIKEY),
+                                         "GET",
+                                         headers=EXPECT_USER_AGENT)
+
+    def test_moo_request(self):
+        """
+            Test that an Artist entity is correctly parsed by the API
+            client
+        """
+
+        apiclient = APIClient(APIKEY)
+
+        # Make the api response
+        with patch.object(apiclient.http, 'request', autospec=True) as api_mock:
+            api_mock.return_value = ({'status': 200}, MOO_JSON)
+            resp = apiclient.request("/moo")
+            assert isinstance(resp, basestring)
+
+        api_mock.assert_called_once_with("http://api.semetric.com/moo?token={0}".format(APIKEY),
+                                         "GET",
+                                         headers=EXPECT_USER_AGENT)
+
+    def test_bad_request(self):
+        """
+            Test that an Artist entity is correctly parsed by the API
+            client
+        """
+
+        apiclient = APIClient(APIKEY)
+
+        # Make the api response
+        with patch.object(apiclient.http, 'request', autospec=True) as api_mock:
+            api_mock.return_value = ({'status': 200}, ERROR_JSON)
+            try:
+                apiclient.request("/error")
+            except APIError as apierror:
+                errcode, errmsg = apierror.args
+                assert errcode == 500
+                assert "Error" in errmsg
+            else:
+                assert False, "APIError exception was not raised"
+
+
+        api_mock.assert_called_once_with("http://api.semetric.com/error?token={0}".format(APIKEY),
                                          "GET",
                                          headers=EXPECT_USER_AGENT)
