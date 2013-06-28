@@ -60,7 +60,7 @@ if __name__ == "__main__":
         # read the install requirements from the requirements.txt
         install_requires=requirements,
         description=("Wrapper for the Semetric API"),
-        long_description=read('README.md'),
+        long_description=read('README.rst'),
         url="http://developer.musicmetric.com",
         license="LGPLv2+",
         namespace_packages=['semetric'],
