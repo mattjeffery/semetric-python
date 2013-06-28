@@ -121,8 +121,24 @@ class APIClient(object):
 
         return resp, json.loads(content)
 
-    def __call__(self, path):
-        pass
+    def request(self, path):
+        """
+        """
+        path = path.lstrip("/")
+        reps, envelope = self._request(path, method="GET")
+
+        if envelope["success"]:
+            response = envelope["response"]
+
+            if isinstance(response, dict):
+                print Entity.entity_factory(response)
+            elif isinstance(response, basestring):
+                return response
+
+        else:
+            raise APIError(envelope["error"]["code"], envelope["error"]["msg"])
+
+
 
 class Entity(object):
     """
@@ -168,6 +184,3 @@ class Artist(Entity):
         self.id = id
         self.name = name
         self.extras = kwargs
-
-
-

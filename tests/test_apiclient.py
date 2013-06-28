@@ -20,9 +20,18 @@ import unittest2
 import warnings
 from mock import patch
 
-from semetric.apiclient import APIClient, APIError
+from semetric.apiclient import (
+    APIClient,
+    APIError,
+    Artist
+)
 
-from consts import APIKEY, EXPECT_USER_AGENT
+from consts import (
+    APIKEY,
+    EXPECT_USER_AGENT,
+    ARTIST_ADELE_JSON,
+    ARTIST_ADELE_ID
+)
 
 class TestAPIClient(unittest2.TestCase):
 
@@ -90,4 +99,21 @@ class TestAPIClient(unittest2.TestCase):
         api_mock.assert_called_once_with("http://api.semetric.com/moo?_method=PUT&token={0}".format(APIKEY),
                                          "POST",
                                          "", # no data
+                                         headers=EXPECT_USER_AGENT)
+
+    def test_artist_request(self):
+        """
+            Test that an Artist entity is correctly parsed by the API
+            client
+        """
+
+        apiclient = APIClient(APIKEY)
+
+        # Make the api response
+        with patch.object(apiclient.http, 'request', autospec=True) as api_mock:
+            api_mock.return_value = ({'status': 200}, ARTIST_ADELE_JSON)
+            apiclient.request("/artist/"+ARTIST_ADELE_ID)
+
+        api_mock.assert_called_once_with("http://api.semetric.com/artist/{0}?token={1}".format(ARTIST_ADELE_ID, APIKEY),
+                                         "GET",
                                          headers=EXPECT_USER_AGENT)
