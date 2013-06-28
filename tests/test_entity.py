@@ -20,7 +20,7 @@ import unittest2
 import warnings
 from mock import patch
 
-from semetric.apiclient import Entity, Artist
+from semetric.apiclient.entity import Entity, Artist
 
 from consts import ARTIST_ADELE, UNKNOWN
 

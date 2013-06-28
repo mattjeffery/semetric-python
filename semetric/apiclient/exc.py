@@ -16,22 +16,5 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-try:
-    import json
-except ImportError: # pragma: no cover
-    import simplejson as json
-
-from semetric.apiclient.client import APIClient
-
-APIKEY = "652a6295aebf4b6eba986dd1581f27f9" # random api key
-EXPECT_USER_AGENT = {"User-Agent": APIClient.USER_AGENT}
-
-ARTIST_ADELE_ID = "e6ee861435b24f67a6283e00bf820bab"
-ARTIST_ADELE = {"class": "artist",
-                "id": ARTIST_ADELE_ID,
-                "name": "Adele" }
-
-ARTIST_ADELE_JSON = json.dumps({"response": ARTIST_ADELE,
-                           "success": True })
-
-UNKNOWN = {"class": "unknown"}
+class APIError(Exception):
+    pass

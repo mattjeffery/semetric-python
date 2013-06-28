@@ -20,11 +20,9 @@ import unittest2
 import warnings
 from mock import patch
 
-from semetric.apiclient import (
-    APIClient,
-    APIError,
-    Artist
-)
+from semetric.apiclient.client import APIClient
+from semetric.apiclient.exc import APIError
+from semetric.apiclient.entity import Artist
 
 from consts import (
     APIKEY,
