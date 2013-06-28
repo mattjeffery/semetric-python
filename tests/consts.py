@@ -16,3 +16,12 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+from semetric.apiclient import APIClient
+
+APIKEY = "652a6295aebf4b6eba986dd1581f27f9" # random api key
+EXPECT_USER_AGENT = {"User-Agent": APIClient.USER_AGENT}
+
+ARTIST_ADELE = {"class": "artist",
+                "id": "e6ee861435b24f67a6283e00bf820bab",
+                "name": "Adele" }
+UNKNOWN = {"class": "unknown"}
