@@ -24,7 +24,7 @@ def read(fname):
     fh = None
     try:
         fh = open(os.path.join(os.path.dirname(__file__), fname))
-    except:
+    except: # pragma: no cover
         if fh:
             fh.close()
         raise
