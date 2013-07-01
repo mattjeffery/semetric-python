@@ -15,7 +15,7 @@ notifications:
     on_success: change
     on_failure: change
 install:
-  - pip install -r requirements/requirements.txt --use-mirrors
+  - pip install -r requirements.txt --use-mirrors
     # Install any Python 3 or Python 2/PyPy specific requirements
   - if [[ "${TRAVIS_PYTHON_VERSION:0:1}" == "3" ]]; then pip install -r requirements/requirements_py3.txt --use-mirrors; else pip install -r requirements/requirements_py2.txt --use-mirrors; fi
   - pip install coverage --use-mirrors
