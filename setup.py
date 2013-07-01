@@ -18,11 +18,14 @@
 
 import os
 import sys
-from semetric.apiclient import __version__
+import re
+
 from setuptools import setup, find_packages
 
-# Utility function to read the README file, etc..
 def read(fname):
+    """
+        Utility function to read the README file, etc.
+    """
     fh = None
     try:
         fh = open(os.path.join(os.path.dirname(__file__), fname))
@@ -35,7 +38,7 @@ def read(fname):
 if __name__ == "__main__":
 
     extra = {}
-    requirements = read("requirements/requirements.txt").splitlines()
+    requirements = read("requirements.txt").splitlines()
 
     # unittest2 backport for py3
     if sys.version_info >= (3,):
@@ -54,7 +57,7 @@ if __name__ == "__main__":
 
     setup(
         name="semetric.apiclient",
-        version=__version__,
+        version=read("semetric/apiclient/VERSION.txt").strip(), # remove new lines from the version string
         author="Matt Jeffery",
         author_email="matt@clan.se",
         # read the install requirements from the requirements.txt
@@ -66,11 +69,12 @@ if __name__ == "__main__":
         namespace_packages=['semetric'],
         packages=find_packages(exclude=['tests', 'examples']),
         include_package_data=True,
+        package_data={'semetric': ['apiclient/*.txt']},
         test_suite='nose.collector',
         tests_require=['nose>=1.3.0',
                        'mock',
                        pkg_unittest2],
-        zip_safe=False,
+        zip_safe=True,
         platforms='any',
         classifiers=[
             "Development Status :: 3 - Alpha",

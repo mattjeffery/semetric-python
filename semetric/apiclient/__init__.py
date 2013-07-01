@@ -15,16 +15,24 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+import os
+
+def read(fname):
+    """
+        Utility function to read the README file, etc.
+    """
+    fh = None
+    try:
+        fh = open(os.path.join(os.path.dirname(__file__), fname))
+    except:
+        if fh:
+            fh.close()
+        raise
+    return fh.read()
 
 __project__ = "semetric-python"
 __author__  = "Matt Jeffery <matt@clan.se>"
-__status__  = "alpha"
-__version_major__ = 0
-__version_minor__ = 1
-__version_patch__ = 0
-__version__ = "{major}.{minor}.{patch}".format(major=__version_major__,
-                                               minor=__version_minor__,
-                                               patch=__version_patch__)
+__version__ = read("VERSION.txt").strip() # stip any newlines etc
 
 from semetric.apiclient.client import APIClient
 

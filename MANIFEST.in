@@ -1,0 +1,9 @@
+include AUTHORS.txt
+include LICENSE.txt
+include README.rst
+include requirements.txt
+recursive-include requirements *.txt
+recursive-include docs *.rst
+recursive-include docs *.html
+prune docs/_build/_sources
+recursive-include tests *.py
