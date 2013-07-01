@@ -34,21 +34,8 @@ class Entity(object):
     """
     __apiclass__ = "entity"
 
-    @staticmethod
-    def subclass_mapping():
-        """
-            Generate a mapping from Semetric API classes to Python
-            Classes.
-        """
-        subclasses= dict((subclass.__apiclass__, subclass)
-                         for subclass
-                         in Entity.__subclasses__())
-        subclasses['entity'] = Entity
-        return subclasses
-
-    @staticmethod
-    def entity_factory(entity_dict):
-        subclasses = Entity.subclass_mapping()
+    def __new__(cls, apisession=None, **entity_dict):
+        subclasses = cls.subclass_mapping()
 
         apiclass = entity_dict.get('class')
 
@@ -64,10 +51,30 @@ class Entity(object):
         try:
             entity_class = subclasses[apiclass]
         except KeyError:
-            entity_class = Entity
+            entity_class = cls
             warnings.warn("Could not map api class `{0}' to a python class, using Entity".format(apiclass), stacklevel=2)
 
-        return entity_class(**entity_dict)
+        # Create an instance of the class
+        # Set the API Session internal variable for the entity
+        new_entity_class = super(Entity, cls).__new__(entity_class) #, apisession=apisession, **entity_dict)
+        new_entity_class.__api_session__ = apisession
+        return new_entity_class
+
+    @classmethod
+    def subclass_mapping(cls):
+        """
+            Generate a mapping from Semetric API classes to Python
+            Classes.
+        """
+        subclasses= dict((subclass.__apiclass__, subclass)
+                         for subclass
+                         in cls.__subclasses__())
+        subclasses['entity'] = cls
+        return subclasses
+
+    @property
+    def session(self):
+        return self.__api_session__
 
     def __init__(self, **kwargs):
         """
@@ -105,9 +112,9 @@ class List(Entity):
         if isinstance(index, slice):
             # return the entity_factory results for each item in the
             # slice
-            return map(Entity.entity_factory, self.entities[index])
+            return map(lambda x: Entity(**x), self.entities[index])
         else:
-            return Entity.entity_factory(self.entities[index])
+            return Entity(**self.entities[index])
 
     def __iter__(self):
         """

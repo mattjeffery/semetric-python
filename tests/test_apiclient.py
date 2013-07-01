@@ -119,6 +119,8 @@ class TestAPIClient(unittest2.TestCase):
             api_mock.return_value = ({'status': 200}, ARTIST_ADELE_JSON)
             resp = apiclient.request("/artist/"+ARTIST_ADELE_ID)
             assert isinstance(resp, Artist)
+            # check the session is set correctly
+            assert resp.session == apiclient
 
         api_mock.assert_called_once_with("http://api.semetric.com/artist/{0}?token={1}".format(ARTIST_ADELE_ID, APIKEY),
                                          "GET",

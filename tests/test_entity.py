@@ -30,13 +30,13 @@ class TestEntity(unittest2.TestCase):
         """
             Test creating an Entity from an entity dict
         """
-        assert isinstance(Entity.entity_factory(ARTIST_ADELE), Artist), "an Artist entity should be created"
+        assert isinstance(Entity(**ARTIST_ADELE), Artist), "an Artist entity should be created"
 
     def test_entity_factory_blank(self):
         """
             Test creating an Entity from an empty dict
         """
-        assert isinstance(Entity.entity_factory({}), Entity), "a plain Entity should be created"
+        assert isinstance(Entity(), Entity), "a plain Entity should be created"
 
     def test_entity_factory_warning_unknown(self):
         """
@@ -46,7 +46,7 @@ class TestEntity(unittest2.TestCase):
             # Cause all warnings to always be triggered.
             warnings.simplefilter("always")
             # Trigger a warning.
-            assert isinstance(Entity.entity_factory(UNKNOWN), Entity), "a plain Entity should be created"
+            assert isinstance(Entity(**UNKNOWN), Entity), "a plain Entity should be created"
             # Verify some things
             assert len(w) == 1, "only one warning should have been generate"
             assert issubclass(w[-1].category, UserWarning), "a UserWarning should have been generated"
@@ -58,7 +58,7 @@ class TestListEntity(unittest2.TestCase):
         """
             Test creating an Entity from an entity dict
         """
-        alist = Entity.entity_factory(ARTIST_LIST)
+        alist = Entity(**ARTIST_LIST)
         assert isinstance(alist, List), "a List entity should be created"
         assert len(alist) == 1, "the list should have one item in it"
         assert isinstance(alist[0], Artist), "the first item in the list should be an Artist"
@@ -73,7 +73,7 @@ class TestDenseEntity(unittest2.TestCase):
         """
             Test creating an Entity from an entity dict
         """
-        timeseries = Entity.entity_factory(DENSE_TIMESERIES)
+        timeseries = Entity(**DENSE_TIMESERIES)
         assert isinstance(timeseries, DenseTimeseries), "a DenseTimeseries entity should be created"
         assert len(timeseries) == 5, "the data should have 5 items in it"
         assert type(timeseries[0]) is tuple, "the data items should be tuples"
