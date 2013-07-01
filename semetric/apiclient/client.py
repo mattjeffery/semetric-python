@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  Copyright (C) 2013  Matt Jeffery <matt@clan,se>
+#  Copyright (C) 2013  Matt Jeffery <matt@clan.se>
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
@@ -18,6 +18,7 @@
 
 import sys
 import httplib2
+import logging
 
 # Special imports for Python 3
 if sys.version_info >= (3,): # pragma: no cover
@@ -37,6 +38,8 @@ from operator import itemgetter
 from semetric.apiclient import __project__, __version__
 from semetric.apiclient.entity import Entity
 from semetric.apiclient.exc import APIError
+
+log = logging.getLogger(__name__)
 
 class APIClient(object):
     """
@@ -101,6 +104,7 @@ class APIClient(object):
                               urlparts.params,
                               query_string,
                               "")) # empty fragment
+            log.debug("Making GET request to {0}".format(url))
             resp, content = self.http.request(url, "GET", headers=self.USER_AGENT_HEADER)
         else:
             # all of the params go in the query string
@@ -112,6 +116,7 @@ class APIClient(object):
                               urlparts.params,
                               query_string,
                               "")) # empty fragment
+            log.debug("Making POST request to {0}".format(url))
             resp, content = self.http.request(url, "POST", urlencode(params), headers=self.USER_AGENT_HEADER)
 
         status = int(resp['status'])
@@ -121,11 +126,11 @@ class APIClient(object):
 
         return resp, json.loads(content)
 
-    def request(self, path):
+    def request(self, path, **params):
         """
         """
         path = path.lstrip("/")
-        reps, envelope = self._request(path, method="GET")
+        reps, envelope = self._request(path, method="GET", **params)
 
         if envelope["success"]:
             response = envelope["response"]

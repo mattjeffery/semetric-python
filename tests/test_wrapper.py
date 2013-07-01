@@ -16,34 +16,38 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-import logging
-
-from argparse import ArgumentParser
+import sys
+import unittest2
+from mock import patch
 
 from semetric.apiclient import SemetricAPI
 from semetric.apiclient.entity import Artist
+from .consts import APIKEY
 
-log = logging.getLogger(__name__)
+# Base string type for Python3
+if sys.version_info >= (3,): # pragma: no cover
+    basestring = str
 
-if __name__ == "__main__":
+class TestSemetricAPI(unittest2.TestCase):
 
-    parser = ArgumentParser()
-    parser.add_argument('--apikey', type=str, help='you semetric api key')
-    parser.add_argument('artist_name', type=str, help='name of the artist to find')
-    args = parser.parse_args()
+    def test_search_request(self):
 
-    if args.apikey is None:
-        parser.error("an API key must be provided")
+        api = SemetricAPI(APIKEY)
 
-    logging.basicConfig(level=logging.DEBUG, format='%(levelname)s %(message)s')
+        # Make the api response
+        with patch.object(api.client, 'request', autospec=True) as api_mock:
+            api_mock.return_value = []
+            api.search(Artist, "lady gaga")
 
-    api = SemetricAPI(args.apikey)
+        api_mock.assert_called_once_with("artist", q="lady gaga")
 
-    log.debug("Searching for artist: {0}".format(args.artist_name))
+    def test_get_request(self):
 
-    results = api.search(Artist, args.artist_name)
+        api = SemetricAPI(APIKEY)
 
-    log.debug("{0} results for artist: {1}".format(len(results), args.artist_name))
+        # Make the api response
+        with patch.object(api.client, 'request', autospec=True) as api_mock:
+            api_mock.return_value = []
+            api.get(Artist, "foo")
 
-    for result in results:
-        print result.id, result.name
+        api_mock.assert_called_once_with("artist/foo")
