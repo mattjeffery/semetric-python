@@ -19,12 +19,15 @@
 import sys
 import warnings
 import logging
+import inspect
 
 __all__ = ['Entity', 'Artist', 'List', 'DenseTimeseries']
 
 # Special imports for Python 3
 if sys.version_info >= (3,): # pragma: no cover
     xrange = range
+
+from semetric.apiclient.util import APIRelationship
 
 log = logging.getLogger(__name__)
 
@@ -35,6 +38,17 @@ class Entity(object):
     __apiclass__ = "entity"
 
     def __new__(cls, apisession=None, **entity_dict):
+        """
+            Create a new class for the Entity being instantiated.
+            The class of the object being created depends on the class
+            variable passed to the __new__ method, we search the list
+            of subclasses for this class and create a new class that
+            has the corresponding __apiclass__ value. eg. The Artist
+            class has __apiclass__ set to "artist" if we create an
+            instance of Entity passing class="artist" then an instance
+            of Artist will be returned with apisession set.
+
+        """
         subclasses = cls.subclass_mapping()
 
         apiclass = entity_dict.get('class')
@@ -58,6 +72,14 @@ class Entity(object):
         # Set the API Session internal variable for the entity
         new_entity_class = super(Entity, cls).__new__(entity_class) #, apisession=apisession, **entity_dict)
         new_entity_class.__api_session__ = apisession
+
+
+        # Find all the APIRelationships for this isntance.
+        is_apirelationship = lambda x: isinstance(x, APIRelationship)
+        for rname, relation in inspect.getmembers(new_entity_class, is_apirelationship):
+            # Augment the APIRelationships with the parent class
+            relation.parent = new_entity_class
+
         return new_entity_class
 
     @classmethod
@@ -76,19 +98,65 @@ class Entity(object):
     def session(self):
         return self.__api_session__
 
+    @property
+    def clsname(self):
+        return self.__apiclass__
+
     def __init__(self, **kwargs):
         """
             Set up some basics for an Entity
         """
         pass
 
-class Artist(Entity):
-    __apiclass__ = "artist"
+    @classmethod
+    def __apiget__(cls, id):
+        """
+            API ID
+        """
+        path = "{entity}/{id}".format(entity=cls.__apiclass__, id=id)
+        return path, {}
+
+    @classmethod
+    def __apisearch__(cls, name):
+        """
+
+        """
+        raise NotImplementedError
+
+class ReleaseGroup(Entity):
+    __apiclass__ = "releasegroup"
 
     def __init__(self, id, name, **kwargs):
         self.id = id
         self.name = name
         self.extras = kwargs
+
+class Artist(Entity):
+    __apiclass__ = "artist"
+
+    releasegroups = APIRelationship(ReleaseGroup)
+
+    def __init__(self, id, name, **kwargs):
+        self.id = id
+        self.name = name
+        self.extras = kwargs
+
+    @classmethod
+    def __apiget__(cls, id, idprefix=None):
+        """
+            API ID
+        """
+        api_id = "{0}:{1}".format(idprefix, id) if idprefix else id
+        path = "{entity}/{id}".format(entity=cls.__apiclass__,
+                                      id=api_id)
+        args = {}
+        return path, args
+
+    @classmethod
+    def __apisearch__(cls, name):
+        """
+        """
+        return cls.__apiclass__, {"q": name}
 
 class List(Entity):
     __apiclass__ = "list"

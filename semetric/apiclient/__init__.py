@@ -43,15 +43,18 @@ class SemetricAPI(object):
         """
         self.client = APIClient(apikey, baseurl)
 
-    def get(self, entity, eid):
+    def get(self, entity, **kwargs):
+        """
+            Query the API to get an Entity from the API based on id
+            params.
+        """
+        # TODO: inspect apiget for arguments
+        path, args = entity.__apiget__(**kwargs)
+        return self.client.request(path, **args)
 
-        path = "{0}/{1}".format(entity.__apiclass__, eid)
-
-        return self.client.request(path)
-
-    def search(self, entity, name):
-
-        path = "{0}".format(entity.__apiclass__)
-
-        return self.client.request(path, q=name)
-
+    def search(self, entity, **kwargs):
+        """
+            Search for Entities in using the API
+        """
+        path, args = entity.__apisearch__(**kwargs)
+        return self.client.request(path, **args)

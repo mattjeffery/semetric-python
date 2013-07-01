@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     log.debug("Searching for artist: {0}".format(args.artist_name))
 
-    results = api.search(Artist, args.artist_name)
+    results = api.search(Artist, name=args.artist_name)
 
     log.debug("{0} results for artist: {1}".format(len(results), args.artist_name))
 

@@ -21,8 +21,9 @@ import warnings
 from mock import patch
 
 from semetric.apiclient.entity import *
+from semetric.apiclient.client import APIClient
 
-from .consts import ARTIST_ADELE, UNKNOWN, ARTIST_LIST, DENSE_TIMESERIES
+from .consts import APIKEY, ARTIST_ADELE, UNKNOWN, ARTIST_LIST, DENSE_TIMESERIES
 
 class TestEntity(unittest2.TestCase):
 
@@ -85,3 +86,16 @@ class TestDenseEntity(unittest2.TestCase):
             expected_timestamp += timeseries.period
         # Make sure the end_time is correct
         assert timeseries.end_time == timestamp, "expected end time stamp does not match last time stamp"
+
+class TestRelationship(unittest2.TestCase):
+
+    def test_artist_relationship(self):
+        apiclient = APIClient(APIKEY)
+
+        # Make the api response
+        with patch.object(apiclient, 'request', autospec=True) as api_mock:
+            api_mock.return_value = ""
+            a = Entity(apisession=apiclient, **ARTIST_ADELE)
+            a.releasegroups()
+
+        api_mock.assert_called_once_with("artist/e6ee861435b24f67a6283e00bf820bab/releasegroup/")

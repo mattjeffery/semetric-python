@@ -22,7 +22,7 @@ from mock import patch
 
 from semetric.apiclient import SemetricAPI
 from semetric.apiclient.entity import Artist
-from .consts import APIKEY
+from .consts import APIKEY, ARTIST_ADELE
 
 # Base string type for Python3
 if sys.version_info >= (3,): # pragma: no cover
@@ -37,7 +37,7 @@ class TestSemetricAPI(unittest2.TestCase):
         # Make the api response
         with patch.object(api.client, 'request', autospec=True) as api_mock:
             api_mock.return_value = []
-            api.search(Artist, "lady gaga")
+            api.search(Artist, name="lady gaga")
 
         api_mock.assert_called_once_with("artist", q="lady gaga")
 
@@ -48,6 +48,7 @@ class TestSemetricAPI(unittest2.TestCase):
         # Make the api response
         with patch.object(api.client, 'request', autospec=True) as api_mock:
             api_mock.return_value = []
-            api.get(Artist, "foo")
+            api.get(Artist, id="foo")
 
         api_mock.assert_called_once_with("artist/foo")
+
