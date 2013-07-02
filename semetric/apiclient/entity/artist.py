@@ -15,7 +15,9 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-
+"""
+    .. module:: semetric.apiclient.entity.artist
+"""
 import logging
 
 from semetric.apiclient.entity.base import Entity
@@ -27,6 +29,40 @@ log = logging.getLogger(__name__)
 
 
 class Artist(Entity):
+    """
+        The :class:`Artist` entity represents the artists in the Semetric API.
+
+        The :class:`Artist` entity supports the :func:`get()<semetric.apiclient.SemetricAPI.get>`
+        and :func:`search()<semetric.apiclient.SemetricAPI.search>` methods of the
+        :class:`SemetricAPI<semetric.apiclient.SemetricAPI>` class.
+        To query the API for an Artist object the :func:`get()<semetric.apiclient.SemetricAPI.get>` method or
+        the :func:`search()<semetric.apiclient.SemetricAPI.search>` method should be used.
+
+        .. function:: SemetricAPI.get(entity, id[, idprefix=None])
+
+            .. seealso:: This method refers to the :func:`SemetricAPI.get()<semetric.apiclient.SemetricAPI.get>` method.
+
+            :param entity: the Artist entity class.
+            :param id: ID of the Artist.
+            :param idprefix: the prefix of the ID eg. `musicbrainz`.
+
+            >>> semetricapi.get(Artist, id="fe66302b0aee49cfbd7d248403036def")
+            >>> semetricapi.get(Artist, id="lady+gaga", idprefix="lastfm")
+
+            TODO: full list of supported ID prefixes
+
+        .. function:: SemetricAPI.search(entity, name)
+
+            .. seealso:: This method refers to the :func:`SemetricAPI.search()<semetric.apiclient.SemetricAPI.search>` method.
+
+            :param entity: the Artist entity class.
+            :param name: Name of the artist to search for.
+
+            >>> semetricapi.search(Artist, name="Lady Gaga")
+            >>> semetricapi.search(Artist, name="Muse")
+
+
+    """
     __apiclass__ = "artist"
     __apiclass_plural__ = "artists"
 
@@ -41,7 +77,8 @@ class Artist(Entity):
     @classmethod
     def __apiget__(cls, id, idprefix=None):
         """
-            API ID
+            Build a request for an Artist.
+
         """
         api_id = "{0}:{1}".format(idprefix, id) if idprefix else id
         path = "{entity}/{id}".format(entity=cls.__apiclass__,
