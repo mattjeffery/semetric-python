@@ -21,7 +21,7 @@ import logging
 from argparse import ArgumentParser
 
 from semetric.apiclient import SemetricAPI
-from semetric.apiclient.entity import Artist
+from semetric.apiclient.entity.entity import Artist
 
 log = logging.getLogger(__name__)
 
