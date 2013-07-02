@@ -61,7 +61,7 @@ class Chart(Entity):
         self.now_id = now_id
         self.start_time = start_time
         self.previous_id = previous_id
-        self.chart_items = map(lambda x: ChartItem(**x), self.data)
+        self.chart_items = map(lambda x: ChartItem(supress_mapping_error=True, **x), self.data)
 
         self.extras = kwargs
 
