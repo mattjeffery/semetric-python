@@ -28,13 +28,17 @@ class APIRelationship(object):
         self.related_entity = related_entity
         self._parent = None
 
+    def copy(self):
+        relation = APIRelationship(self.related_entity)
+        relation._parent = self._parent
+        return relation
+
     @property
     def parent(self):
         if self._parent is None:
             raise RuntimeError("parent must be set, has the class been setup correctly?")
         else:
             return self._parent
-
 
     @parent.setter
     def parent(self, parent):

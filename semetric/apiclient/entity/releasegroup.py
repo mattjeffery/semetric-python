@@ -26,17 +26,15 @@ class ReleaseGroup(Entity):
     __apiclass__ = "releasegroup"
     __apiclass_plural__ = "releasegroups"
 
-    def __init__(self, id, name, artists=None, **kwargs):
+    def __init__(self, id, name, **kwargs):
         self.id = id
         self.name = name
-        self._rartists = artists or []
-        self._artists = None
 
         self.extras = kwargs
 
     @property
     def artist(self):
-        if len(self._rartists) > 0:
+        if len(self.artists) > 0:
             return self.artists[0]
         else:
             return None
@@ -46,8 +44,5 @@ class ReleaseGroup(Entity):
         """
             return the artists entities for this ReleaseGroup
         """
-        # check the cache
-        if self._artists is None:
-            self._artists = [ Entity(**artist) for artist in self._rartists ]
-
+        print self.__dict__
         return self._artists
