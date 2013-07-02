@@ -1,20 +1,18 @@
-.. semetric-python documentation master file, created by
-   sphinx-quickstart on Thu Jun 27 18:10:28 2013.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Semetric API Wrapper
+********************
 
-Welcome to semetric-python's documentation!
-===========================================
+You can sign signup for a free non-commercial API key for the Semetric API at http://developer.musicmetric.com/signup.html.
 
-Contents:
+.. automodule:: semetric.apiclient
 
 .. toctree::
    :maxdepth: 2
+
+   client
+   entities
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
-
