@@ -50,9 +50,9 @@ class TestSemetricAPI(unittest2.TestCase):
         # Make the api response
         with patch.object(api.client, 'request', autospec=True) as api_mock:
             api_mock.return_value = []
-            api.get(Artist, id="foo")
+            api.get(Artist, id="87e0e4ccc7f4415cbd6ba60ad49943b6")
 
-        api_mock.assert_called_once_with("artist/foo")
+        api_mock.assert_called_once_with("artist/87e0e4ccc7f4415cbd6ba60ad49943b6")
 
     def test_search_request_not_implemented(self):
 
