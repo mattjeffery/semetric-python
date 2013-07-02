@@ -21,5 +21,6 @@ from semetric.apiclient.entity.artist import Artist
 from semetric.apiclient.entity.releasegroup import ReleaseGroup
 from semetric.apiclient.entity.list import List
 from semetric.apiclient.entity.chart import Chart
+from semetric.apiclient.entity.timeseries import DenseTimeseries
 
-__all__ = ['Entity', 'Artist', 'ReleaseGroup', 'List', 'Chart']
+__all__ = ['Entity', 'Artist', 'ReleaseGroup', 'List', 'Chart', 'DenseTimeseries']

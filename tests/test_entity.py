@@ -18,6 +18,7 @@
 
 import unittest2
 import warnings
+import collections
 from mock import patch
 
 from semetric.apiclient.entity.base import Entity
@@ -25,6 +26,7 @@ from semetric.apiclient.entity.artist import Artist
 from semetric.apiclient.entity.list import List
 from semetric.apiclient.entity.timeseries import DenseTimeseries
 from semetric.apiclient.entity.releasegroup import ReleaseGroup
+from semetric.apiclient.entity.chart import Chart, ChartItem
 from semetric.apiclient.client import APIClient
 
 from .consts import (
@@ -34,7 +36,8 @@ from .consts import (
     ARTIST_LIST,
     DENSE_TIMESERIES,
     ARTIST_ADELE_WITH_RELEASEGROUPS,
-    ADELE_RELEASE_GROUP
+    ADELE_RELEASE_GROUP,
+    SHORT_CHART
 )
 
 class TestEntity(unittest2.TestCase):
@@ -133,14 +136,38 @@ class TestReleaseGroup(unittest2.TestCase):
 
     def test_releasegroup(self):
         """
-            Test creating an ReleaseGroup
+            Test creating a ReleaseGroup
         """
         apiclient = APIClient(APIKEY)
 
         # Make the api response
-        with patch.object(apiclient, 'request', autospec=True) as api_mock:
-            api_mock.return_value = ""
-            a = Entity(apisession=apiclient, **ADELE_RELEASE_GROUP)
-            artists = a.artists
-            assert len(artists) == 1, "the artists list should only contain one artist"
-            assert artists[0] == a.artist, "the artist for the releasegroup should be the same as the first artist in the list of artists"
+        a = Entity(apisession=apiclient, **ADELE_RELEASE_GROUP)
+        artists = a.artists
+        assert len(artists) == 1, "the artists list should only contain one artist"
+        assert artists[0] == a.artist, "the artist for the releasegroup should be the same as the first artist in the list of artists"
+
+class TestChart(unittest2.TestCase):
+
+    def test_chart(self):
+        """
+            Test creating a Chart
+        """
+        apiclient = APIClient(APIKEY)
+
+        # Make the api response
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+
+            c = Entity(apisession=apiclient, **SHORT_CHART)
+
+            assert len(w) == 0, "no warnings should have be issued"
+            assert isinstance(c, Chart), "should have returned a chart object"
+            assert isinstance(c, collections.Iterable), "should be Iterable"
+            assert len(c) == 1, "chart should have one item"
+            assert isinstance(c[0], ChartItem), "the item in the chart should be a ChartItem"
+            assert hasattr(c[0], "_releasegroup"), "ChartItem should have a generated releasegroup attribute"
+            assert hasattr(c[0], "_artist"), "ChartItem should have a generated artist attribute"
+            assert isinstance(c[0]._releasegroup, ReleaseGroup), "the ChartItem's releasegroup should be a ReleaseGroup"
+            for index, chart_item in enumerate(c, 0):
+                assert chart_item == c[index], "chart item by iteration and by index should match"
+            assert len(c[:]) == len(c), "the complete slice of the chart is the same length as the chart"

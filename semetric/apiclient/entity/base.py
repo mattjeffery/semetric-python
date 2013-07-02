@@ -37,7 +37,7 @@ class Entity(object):
     __apiclass_plural__ = "entities"
     __subclass_mapping__ = None
 
-    def __new__(cls, apisession=None, **entity_dict):
+    def __new__(cls, apisession=None, supress_mapping_error=False, **entity_dict):
         """
             Create a new class for the Entity being instantiated. The class of the object being created depends
             on the class variable passed to the __new__ method, we search the list of subclasses for this class
@@ -62,7 +62,8 @@ class Entity(object):
             entity_class = subclasses[apiclass]
         except KeyError:
             entity_class = cls
-            warnings.warn("Could not map api class `{0}' to a python class".format(apiclass), stacklevel=2)
+            if not supress_mapping_error:
+                warnings.warn("Could not map api class `{0}' to a python class".format(apiclass), stacklevel=2)
 
         # Create an instance of the class
         # Set the API Session internal variable for the entity
@@ -99,6 +100,18 @@ class Entity(object):
 
         return new_entity_class
 
+    @staticmethod
+    def list_subclasses(cls):
+        """
+            List all the subclasses of a class and any subclasses of those classes
+        """
+        for subclass in cls.__subclasses__():
+            for subsubclass in Entity.list_subclasses(subclass):
+                yield subsubclass
+
+        if cls.__apiclass__:
+            yield cls
+
     @classmethod
     def subclass_mapping(cls):
         """
@@ -108,9 +121,7 @@ class Entity(object):
         if cls.__subclass_mapping__ is None:
             subclasses= dict((subclass.__apiclass__, subclass)
                               for subclass
-                              in cls.__subclasses__()
-                              if subclass.__apiclass__)
-            subclasses['entity'] = cls
+                              in Entity.list_subclasses(cls))
             cls.__subclass_mapping__ = subclasses
 
         return cls.__subclass_mapping__

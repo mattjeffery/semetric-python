@@ -22,7 +22,42 @@ from semetric.apiclient.entity.base import Entity
 
 log = logging.getLogger(__name__)
 
-class DenseTimeseries(Entity):
+class Timeseries(Entity):
+
+    def __len__(self):
+        """
+            Get the length of the data
+        """
+        return len(self.data)
+
+    def __getitem__(self, index):
+        """
+            Get an item or item slice from the data
+        """
+        return self.data[index]
+
+    def __iter__(self):
+        """
+            Simple iterator for the data
+        """
+        for i in xrange(len(self)):
+            yield self[i]
+
+    @classmethod
+    def __apiget__(cls, entity, dataset, country=None, variant=None, processing=None, granularity=None, **kwargs):
+        """
+            Return a the path and args for a timeseries endpoint.
+        """
+        path = "{entity.clsname}/{entity.id}/{dataset}".format(entity=entity, dataset=dataset)
+
+        args = { "country": country or "ALL",
+                 "variant": variant or "diff",
+                 "processing": processing or "processed",
+                 "granularity": granularity or "day"
+               }
+        return path, args
+
+class DenseTimeseries(Timeseries):
     __apiclass__ = "dense"
     __apiclass_plural__ = "denses"
 
@@ -43,22 +78,3 @@ class DenseTimeseries(Entity):
             Generate the timeseries data
         """
         return list(zip(range(self.start_time, self.end_time+self.period, self.period), data))
-
-    def __len__(self):
-        """
-            Get the length of the data
-        """
-        return len(self.data)
-
-    def __getitem__(self, index):
-        """
-            Get an item or item slice from the data
-        """
-        return self.data[index]
-
-    def __iter__(self):
-        """
-            Simple iterator for the data
-        """
-        for i in xrange(len(self)):
-            yield self[i]

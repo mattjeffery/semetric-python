@@ -20,20 +20,26 @@ import logging
 import csv
 import sys
 
+from datetime import datetime
 from argparse import ArgumentParser
 
 from semetric.apiclient import SemetricAPI
-from semetric.apiclient.entity.chart import Chart
+from semetric.apiclient.entity.artist import Artist
 
 log = logging.getLogger(__name__)
 
 if __name__ == "__main__":
 
     parser = ArgumentParser()
-    parser.add_argument('--apikey', type=str, help='you semetric api key')
-    parser.add_argument('--country', type=str, help='country iso code for the chart')
+    parser.add_argument('--apikey', type=str, help='your semetric api key')
     parser.add_argument('--no-header', action="store_true", help='disable the header for the csv file')
-    parser.add_argument('chart_id', type=str, help='id of the chart')
+    parser.add_argument('--unix-timestamp', action="store_true", help='leave the timestamps as unix epoch time', default=False)
+    parser.add_argument('--country', type=str, help='country iso code for the time series')
+    parser.add_argument('--variant', type=str, help='variant for the timeseries [default=diff]')
+    parser.add_argument('--processing', type=str, help='processing level for the timeseries [default=processed]')
+    parser.add_argument('--granularity', type=str, help='granularity for the timeseries [default=day]')
+    parser.add_argument('artist_id', type=str, help='name of the artist to find')
+    parser.add_argument('dataset', type=str, help='dataset to get the data for')
     args = parser.parse_args()
 
     if args.apikey is None:
@@ -43,21 +49,18 @@ if __name__ == "__main__":
 
     api = SemetricAPI(args.apikey)
 
-    log.debug("Loading chart with ID: {0}".format(args.chart_id))
+    log.debug("Loading artist with ID: {0}".format(args.artist_id))
 
-    chart = api.get(Chart, id=args.chart_id, country=args.country)
-
-    log.debug("Chart found: {0} it has the following entries".format(chart.name))
+    artist = api.get(Artist, id=args.artist_id)
 
     csvout = csv.writer(sys.stdout, delimiter='\t')
-
     if not args.no_header:
-        csvout.writerow(["rank", "value", "artist_id", "artist_name", "releasegroup_id", "releasegroup_name"])
+        csvout.writerow(["timestamp", "value"])
 
-    for chartitem in chart:
-        csvout.writerow([chartitem.rank,
-                         chartitem.value,
-                         chartitem._releasegroup.artist.id,
-                         chartitem._releasegroup.artist.name,
-                         chartitem._releasegroup.id,
-                         chartitem._releasegroup.name])
+    for ts, value in artist.timeseries(args.dataset, variant=args.variant, processing=args.processing, country=args.country, granularity=args.granularity):
+        if args.unix_timestamp:
+            timestamp = ts
+        else:
+            dt = datetime.utcfromtimestamp(ts)
+            timestamp = dt.strftime("%Y-%m-%d %H:%M:%S")
+        csvout.writerow([timestamp, value])

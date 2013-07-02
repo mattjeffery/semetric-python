@@ -65,3 +65,30 @@ DENSE_TIMESERIES = { "data": [1,2,3,4,5],
                      "period": 86400,
                      "start_time": 1258588800,
                      "end_time": 1258934400 }
+
+SHORT_CHART = { "class": "chart",
+                "data": [
+                  { "artist": {
+                        "class": "artist",
+                        "id": "b5eccd4e8ae24cc49b80fedfe74581d1",
+                        "name": "Kanye West" },
+                    "rank": 1,
+                    "releasegroup": {
+                        "artists": [ { "class": "artist",
+                                       "id": "b5eccd4e8ae24cc49b80fedfe74581d1",
+                                       "name": "Kanye West" } ],
+                        "class": "releasegroup",
+                        "id": "7c51ce1fb300444f9ef70cb5fc2756b8",
+                        "name": "Yeezus",
+                        "summary": { "description": "Album" }
+                    },
+                    "value": 776
+                  }],
+                "end_time": 1372636800,
+                "id": "8571fd9f7be658f2ae51bc2847781ca7",
+                "name": "releasediff",
+                "now_id": "0695f0bba6144dfaa390e9b9f017ceab",
+                "period": 86400,
+                "previous_id": "09eb2357416251b587a3d65cc1b65258",
+                "start_time": 1372550400
+              }
