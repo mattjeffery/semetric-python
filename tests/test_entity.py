@@ -155,15 +155,19 @@ class TestChart(unittest2.TestCase):
         apiclient = APIClient(APIKEY)
 
         # Make the api response
-        c = Entity(apisession=apiclient, **SHORT_CHART)
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
 
-        assert isinstance(c, Chart), "should have returned a chart object"
-        assert isinstance(c, collections.Iterable), "should be Iterable"
-        assert len(c) == 1, "chart should have one item"
-        assert isinstance(c[0], ChartItem), "the item in the chart should be a ChartItem"
-        assert hasattr(c[0], "_releasegroup"), "ChartItem should have a generated releasegroup attribute"
-        assert hasattr(c[0], "_artist"), "ChartItem should have a generated artist attribute"
-        assert isinstance(c[0]._releasegroup, ReleaseGroup), "the ChartItem's releasegroup should be a ReleaseGroup"
-        for index, chart_item in enumerate(c, 0):
-            assert chart_item == c[index], "chart item by iteration and by index should match"
-        assert len(c[:]) == len(c), "the complete slice of the chart is the same length as the chart"
+            c = Entity(apisession=apiclient, **SHORT_CHART)
+
+            assert len(w) == 0, "no warnings should have be issued"
+            assert isinstance(c, Chart), "should have returned a chart object"
+            assert isinstance(c, collections.Iterable), "should be Iterable"
+            assert len(c) == 1, "chart should have one item"
+            assert isinstance(c[0], ChartItem), "the item in the chart should be a ChartItem"
+            assert hasattr(c[0], "_releasegroup"), "ChartItem should have a generated releasegroup attribute"
+            assert hasattr(c[0], "_artist"), "ChartItem should have a generated artist attribute"
+            assert isinstance(c[0]._releasegroup, ReleaseGroup), "the ChartItem's releasegroup should be a ReleaseGroup"
+            for index, chart_item in enumerate(c, 0):
+                assert chart_item == c[index], "chart item by iteration and by index should match"
+            assert len(c[:]) == len(c), "the complete slice of the chart is the same length as the chart"
