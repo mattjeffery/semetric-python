@@ -21,7 +21,7 @@ import logging
 from argparse import ArgumentParser
 
 from semetric.apiclient import SemetricAPI
-from semetric.apiclient.entity.artist import Artist
+from semetric.apiclient.entity.chart import Chart
 
 log = logging.getLogger(__name__)
 
@@ -29,7 +29,8 @@ if __name__ == "__main__":
 
     parser = ArgumentParser()
     parser.add_argument('--apikey', type=str, help='you semetric api key')
-    parser.add_argument('artist_id', type=str, help='name of the artist to find')
+    parser.add_argument('--country', type=str, help='country iso code for the chart')
+    parser.add_argument('chart_id', type=str, help='id of the chart')
     args = parser.parse_args()
 
     if args.apikey is None:
@@ -39,11 +40,13 @@ if __name__ == "__main__":
 
     api = SemetricAPI(args.apikey)
 
-    log.debug("Loading artist with ID: {0}".format(args.artist_id))
+    log.debug("Loading chart with ID: {0}".format(args.chart_id))
 
-    artist = api.get(Artist, id=args.artist_id)
+    chart = api.get(Chart, id=args.chart_id, country=args.country)
 
-    log.debug("Artist found: {0} they have the following release groups".format(artist.name))
+    log.debug("Chart found: {0} it has the following entries".format(chart.name))
 
-    for release in artist.releasegroups():
-        print release.id, release.name
+    for chartitem in chart:
+        print u"{0:02}: {1} -- {2}".format(chartitem.rank,
+                                           chartitem._releasegroup.artist.name,
+                                           chartitem._releasegroup.name)

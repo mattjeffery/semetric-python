@@ -24,6 +24,7 @@ log = logging.getLogger(__name__)
 
 class DenseTimeseries(Entity):
     __apiclass__ = "dense"
+    __apiclass_plural__ = "denses"
 
     def __init__(self, data, start_time, end_time, period, **kwargs):
         self.id = None

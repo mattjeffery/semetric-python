@@ -26,10 +26,24 @@ from semetric.apiclient.client import APIClient
 APIKEY = "652a6295aebf4b6eba986dd1581f27f9" # random api key
 EXPECT_USER_AGENT = {"User-Agent": APIClient.USER_AGENT}
 
+ADELE_RELEASE_GROUP = { "artists": [{
+                          "class": "artist",
+                          "id": "e6ee861435b24f67a6283e00bf820bab",
+                          "name": "Adele" }],
+                        "class": "releasegroup",
+                        "id": "318f8a824e8b4eb7885d5f45e13b8e08",
+                        "name": "21",
+                        "summary": { "description": "Album" }
+                      }
 ARTIST_ADELE_ID = "e6ee861435b24f67a6283e00bf820bab"
-ARTIST_ADELE = {"class": "artist",
-                "id": ARTIST_ADELE_ID,
-                "name": "Adele" }
+ARTIST_ADELE =   {"class": "artist",
+                  "id": ARTIST_ADELE_ID,
+                  "name": "Adele",
+                  "summary": { "foo": "bar"},
+                  "extra": True }
+
+ARTIST_ADELE_WITH_RELEASEGROUPS = ARTIST_ADELE.copy()
+ARTIST_ADELE_WITH_RELEASEGROUPS.update({"releasegroups": [ADELE_RELEASE_GROUP], "releasegroup": ADELE_RELEASE_GROUP})
 
 ARTIST_ADELE_JSON = json.dumps({"response": ARTIST_ADELE,
                            "success": True })

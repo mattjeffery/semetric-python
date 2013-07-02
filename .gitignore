@@ -39,5 +39,5 @@ nosetests.xml
 sftp-config.json
 
 #VirtualEnv
-virtualenv/
+virtualenv*/
 venv/

@@ -15,3 +15,11 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+from semetric.apiclient.entity.base import Entity
+from semetric.apiclient.entity.artist import Artist
+from semetric.apiclient.entity.releasegroup import ReleaseGroup
+from semetric.apiclient.entity.list import List
+from semetric.apiclient.entity.chart import Chart
+
+__all__ = ['Entity', 'Artist', 'ReleaseGroup', 'List', 'Chart']

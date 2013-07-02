@@ -24,9 +24,18 @@ from semetric.apiclient.entity.base import Entity
 from semetric.apiclient.entity.artist import Artist
 from semetric.apiclient.entity.list import List
 from semetric.apiclient.entity.timeseries import DenseTimeseries
+from semetric.apiclient.entity.releasegroup import ReleaseGroup
 from semetric.apiclient.client import APIClient
 
-from .consts import APIKEY, ARTIST_ADELE, UNKNOWN, ARTIST_LIST, DENSE_TIMESERIES
+from .consts import (
+    APIKEY,
+    ARTIST_ADELE,
+    UNKNOWN,
+    ARTIST_LIST,
+    DENSE_TIMESERIES,
+    ARTIST_ADELE_WITH_RELEASEGROUPS,
+    ADELE_RELEASE_GROUP
+)
 
 class TestEntity(unittest2.TestCase):
 
@@ -97,8 +106,41 @@ class TestRelationship(unittest2.TestCase):
 
         # Make the api response
         with patch.object(apiclient, 'request', autospec=True) as api_mock:
-            api_mock.return_value = ""
+            api_mock.return_value = [ReleaseGroup(**ADELE_RELEASE_GROUP)]
             a = Entity(apisession=apiclient, **ARTIST_ADELE)
-            a.releasegroups()
+            release_groups = a.releasegroups()
+            assert type(release_groups) is list, "a list of releasegroups should be returned"
+            assert len(release_groups) == 1, "a list of one releasegroup should be returned"
+            assert isinstance(release_groups[0], ReleaseGroup), "a releasegroup was expected"
 
         api_mock.assert_called_once_with("artist/e6ee861435b24f67a6283e00bf820bab/releasegroup/")
+
+    def test_artist_relationship_cached(self):
+        apiclient = APIClient(APIKEY)
+
+        # Make the api response
+        with patch.object(apiclient, 'request', autospec=True) as api_mock:
+            api_mock.return_value = ""
+            a = Entity(apisession=apiclient, **ARTIST_ADELE_WITH_RELEASEGROUPS)
+            release_groups = a.releasegroups()
+            assert type(release_groups) is list, "a list of releasegroups should be returned"
+            assert len(release_groups) == 1, "a list of one releasegroup should be returned"
+            assert isinstance(release_groups[0], ReleaseGroup), "a releasegroup was expected"
+
+        assert api_mock.called == False, "the API shoud not be called"
+
+class TestReleaseGroup(unittest2.TestCase):
+
+    def test_releasegroup(self):
+        """
+            Test creating an ReleaseGroup
+        """
+        apiclient = APIClient(APIKEY)
+
+        # Make the api response
+        with patch.object(apiclient, 'request', autospec=True) as api_mock:
+            api_mock.return_value = ""
+            a = Entity(apisession=apiclient, **ADELE_RELEASE_GROUP)
+            artists = a.artists
+            assert len(artists) == 1, "the artists list should only contain one artist"
+            assert artists[0] == a.artist, "the artist for the releasegroup should be the same as the first artist in the list of artists"

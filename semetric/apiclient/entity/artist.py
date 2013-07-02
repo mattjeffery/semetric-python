@@ -27,12 +27,14 @@ log = logging.getLogger(__name__)
 
 class Artist(Entity):
     __apiclass__ = "artist"
+    __apiclass_plural__ = "artists"
 
     releasegroups = APIRelationship(ReleaseGroup)
 
-    def __init__(self, id, name, **kwargs):
+    def __init__(self, id, name, summary=None, **kwargs):
         self.id = id
         self.name = name
+        self.summary = summary or {}
         self.extras = kwargs
 
     @classmethod

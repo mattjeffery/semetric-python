@@ -24,8 +24,26 @@ log = logging.getLogger(__name__)
 
 class ReleaseGroup(Entity):
     __apiclass__ = "releasegroup"
+    __apiclass_plural__ = "releasegroups"
 
     def __init__(self, id, name, **kwargs):
         self.id = id
         self.name = name
+
         self.extras = kwargs
+
+    @property
+    def artist(self):
+        if self.artists and len(self.artists) > 0:
+            return self.artists[0]
+        else:
+            return None
+
+    @property
+    def artists(self):
+        """
+            return the artists entities for this ReleaseGroup
+        """
+        if hasattr(self,"_artists"):
+            return self._artists
+

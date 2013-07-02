@@ -34,18 +34,16 @@ class Entity(object):
         Base class for an entity in the Semetric API
     """
     __apiclass__ = "entity"
+    __apiclass_plural__ = "entities"
+    __subclass_mapping__ = None
 
     def __new__(cls, apisession=None, **entity_dict):
         """
-            Create a new class for the Entity being instantiated.
-            The class of the object being created depends on the class
-            variable passed to the __new__ method, we search the list
-            of subclasses for this class and create a new class that
-            has the corresponding __apiclass__ value. eg. The Artist
-            class has __apiclass__ set to "artist" if we create an
-            instance of Entity passing class="artist" then an instance
-            of Artist will be returned with apisession set.
-
+            Create a new class for the Entity being instantiated. The class of the object being created depends
+            on the class variable passed to the __new__ method, we search the list of subclasses for this class
+            and create a new class that has the corresponding __apiclass__ value. eg. The Artist class has
+            __apiclass__ set to "artist" if we create an instance of Entity passing class="artist" then an
+            instance of Artist will be returned with apisession set.
         """
         subclasses = cls.subclass_mapping()
 
@@ -58,17 +56,17 @@ class Entity(object):
             elif 'data' in entity_dict: # time series
                 apiclass = 'dense'
             else: # fall back
-                apiclass = 'entity'
+                apiclass = cls.__name__.lower()
 
         try:
             entity_class = subclasses[apiclass]
         except KeyError:
             entity_class = cls
-            warnings.warn("Could not map api class `{0}' to a python class, using Entity".format(apiclass), stacklevel=2)
+            warnings.warn("Could not map api class `{0}' to a python class".format(apiclass), stacklevel=2)
 
         # Create an instance of the class
         # Set the API Session internal variable for the entity
-        new_entity_class = super(Entity, cls).__new__(entity_class) #, apisession=apisession, **entity_dict)
+        new_entity_class = super(Entity, cls).__new__(entity_class)
         new_entity_class.__api_session__ = apisession
 
 
@@ -76,7 +74,28 @@ class Entity(object):
         is_apirelationship = lambda x: isinstance(x, APIRelationship)
         for rname, relation in inspect.getmembers(new_entity_class, is_apirelationship):
             # Augment the APIRelationships with the parent class
-            relation.parent = new_entity_class
+            new_relation = relation.copy() # create a new instance of relation with the same settings
+            setattr(new_entity_class, rname, new_relation)
+            new_relation.parent = new_entity_class
+
+        entity_mapping = Entity.subclass_mapping()
+
+        # If the entity has properties that are the same name as api classes then build
+        # API class instances for those objects.
+        for EntitySubClass in entity_mapping.values():
+            entity_name = EntitySubClass.__apiclass__
+
+            if entity_dict.has_key(entity_name):
+                setattr(new_entity_class, "_"+entity_name, EntitySubClass(**entity_dict[entity_name]))
+
+        # Add the plural versions of the entities
+        for EntitySubClass in entity_mapping.values():
+            entity_name = EntitySubClass.__apiclass_plural__
+
+            if entity_dict.has_key(entity_name) and type(entity_dict[entity_name]) is list:
+                setattr(new_entity_class, "_"+entity_name, [ EntitySubClass(**e) for e in entity_dict[entity_name] ] )
+
+        cls.subclass_mapping()
 
         return new_entity_class
 
@@ -84,13 +103,17 @@ class Entity(object):
     def subclass_mapping(cls):
         """
             Generate a mapping from Semetric API classes to Python
-            Classes.
+            Classes and create a cache of the subclasses
         """
-        subclasses= dict((subclass.__apiclass__, subclass)
-                         for subclass
-                         in cls.__subclasses__())
-        subclasses['entity'] = cls
-        return subclasses
+        if cls.__subclass_mapping__ is None:
+            subclasses= dict((subclass.__apiclass__, subclass)
+                              for subclass
+                              in cls.__subclasses__()
+                              if subclass.__apiclass__)
+            subclasses['entity'] = cls
+            cls.__subclass_mapping__ = subclasses
+
+        return cls.__subclass_mapping__
 
     @property
     def session(self):
@@ -99,6 +122,10 @@ class Entity(object):
     @property
     def clsname(self):
         return self.__apiclass__
+
+    @property
+    def clsname_plural(self):
+        return self.__apiclass_plural__
 
     def __init__(self, **kwargs):
         """

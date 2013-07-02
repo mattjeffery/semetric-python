@@ -21,6 +21,7 @@ import unittest2
 from mock import patch
 
 from semetric.apiclient import SemetricAPI
+from semetric.apiclient.entity.base import Entity
 from semetric.apiclient.entity.artist import Artist
 from .consts import APIKEY
 
@@ -51,4 +52,21 @@ class TestSemetricAPI(unittest2.TestCase):
             api.get(Artist, id="foo")
 
         api_mock.assert_called_once_with("artist/foo")
+
+    def test_search_request_not_implemented(self):
+
+        api = SemetricAPI(APIKEY)
+        with self.assertRaises(NotImplementedError) as exc:
+            api.search(Entity, name="foo")
+
+    def test_search_request_entity(self):
+
+        api = SemetricAPI(APIKEY)
+
+        # Make the api response
+        with patch.object(api.client, 'request', autospec=True) as api_mock:
+            api_mock.return_value = []
+            api.get(Entity, id="foo")
+
+        api_mock.assert_called_once_with("entity/foo")
 
