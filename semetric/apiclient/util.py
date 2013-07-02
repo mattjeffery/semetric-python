@@ -44,9 +44,11 @@ class APIRelationship(object):
         """
             Return the related entities from the API
         """
+        relation_attr = "_"+self.related_entity.__apiclass__
+        if not hasattr(self.parent, relation_attr) or getattr(self.parent, relation_attr) is None:
+            path = "{cls}/{id}/{rel_cls}/".format(cls=self.parent.clsname,
+                                                  id=self.parent.id,
+                                                  rel_cls=self.related_entity.__apiclass__)
+            setattr(self.parent, relation_attr, self.parent.session.request(path))
 
-        path = "{cls}/{id}/{rel_cls}/".format(cls=self.parent.clsname,
-                                              id=self.parent.id,
-                                              rel_cls=self.related_entity.__apiclass__)
-
-        return self.parent.session.request(path)
+        return getattr(self.parent, relation_attr)
