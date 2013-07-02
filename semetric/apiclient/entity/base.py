@@ -66,7 +66,7 @@ class Entity(object):
 
         # Create an instance of the class
         # Set the API Session internal variable for the entity
-        new_entity_class = super(Entity, cls).__new__(entity_class) 
+        new_entity_class = super(Entity, cls).__new__(entity_class)
         new_entity_class.__api_session__ = apisession
 
 
@@ -74,7 +74,9 @@ class Entity(object):
         is_apirelationship = lambda x: isinstance(x, APIRelationship)
         for rname, relation in inspect.getmembers(new_entity_class, is_apirelationship):
             # Augment the APIRelationships with the parent class
-            relation.parent = new_entity_class
+            new_relation = relation.copy() # create a new instance of relation with the same settings
+            setattr(new_entity_class, rname, new_relation)
+            new_relation.parent = new_entity_class
 
         entity_mapping = Entity.subclass_mapping()
 
@@ -106,7 +108,7 @@ class Entity(object):
         if cls.__subclass_mapping__ is None:
             subclasses= dict((subclass.__apiclass__, subclass)
                               for subclass
-                              in cls.__subclasses__() 
+                              in cls.__subclasses__()
                               if subclass.__apiclass__)
             subclasses['entity'] = cls
             cls.__subclass_mapping__ = subclasses
