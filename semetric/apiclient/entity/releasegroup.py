@@ -34,7 +34,7 @@ class ReleaseGroup(Entity):
 
     @property
     def artist(self):
-        if len(self.artists) > 0:
+        if self.artists and len(self.artists) > 0:
             return self.artists[0]
         else:
             return None
@@ -44,5 +44,6 @@ class ReleaseGroup(Entity):
         """
             return the artists entities for this ReleaseGroup
         """
-        print self.__dict__
-        return self._artists
+        if hasattr(self,"_artists"):
+            return self._artists
+

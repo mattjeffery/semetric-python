@@ -106,9 +106,11 @@ class TestRelationship(unittest2.TestCase):
 
         # Make the api response
         with patch.object(apiclient, 'request', autospec=True) as api_mock:
-            api_mock.return_value = ""
+            api_mock.return_value = [ADELE_RELEASE_GROUP]
             a = Entity(apisession=apiclient, **ARTIST_ADELE)
-            a.releasegroups()
+            release_groups = a.releasegroups()
+            assert type(release_groups) is list, "a list of releasegroups should be returned"
+            assert len(release_groups) == 1, "a list of one releasegroup should be returned"
 
         api_mock.assert_called_once_with("artist/e6ee861435b24f67a6283e00bf820bab/releasegroup/")
 
@@ -119,7 +121,9 @@ class TestRelationship(unittest2.TestCase):
         with patch.object(apiclient, 'request', autospec=True) as api_mock:
             api_mock.return_value = ""
             a = Entity(apisession=apiclient, **ARTIST_ADELE_WITH_RELEASEGROUPS)
-            a.releasegroups()
+            release_groups = a.releasegroups()
+            assert type(release_groups) is list, "a list of releasegroups should be returned"
+            assert len(release_groups) == 1, "a list of one releasegroup should be returned"
 
         assert api_mock.called == False, "the API shoud not be called"
 
