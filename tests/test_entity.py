@@ -20,7 +20,10 @@ import unittest2
 import warnings
 from mock import patch
 
-from semetric.apiclient.entity import *
+from semetric.apiclient.entity.base import Entity
+from semetric.apiclient.entity.artist import Artist
+from semetric.apiclient.entity.list import List
+from semetric.apiclient.entity.timeseries import DenseTimeseries
 from semetric.apiclient.client import APIClient
 
 from .consts import APIKEY, ARTIST_ADELE, UNKNOWN, ARTIST_LIST, DENSE_TIMESERIES

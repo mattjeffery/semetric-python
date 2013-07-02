@@ -21,8 +21,8 @@ import unittest2
 from mock import patch
 
 from semetric.apiclient import SemetricAPI
-from semetric.apiclient.entity import Artist
-from .consts import APIKEY, ARTIST_ADELE
+from semetric.apiclient.entity.artist import Artist
+from .consts import APIKEY
 
 # Base string type for Python3
 if sys.version_info >= (3,): # pragma: no cover

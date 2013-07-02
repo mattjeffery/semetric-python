@@ -36,7 +36,7 @@ except ImportError: # pragma: no cover
 from operator import itemgetter
 
 from semetric.apiclient import __project__, __version__
-from semetric.apiclient.entity import Entity
+from semetric.apiclient.entity.base import Entity
 from semetric.apiclient.exc import APIError
 
 log = logging.getLogger(__name__)

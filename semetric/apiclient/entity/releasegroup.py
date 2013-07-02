@@ -15,3 +15,17 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+import logging
+
+from semetric.apiclient.entity.base import Entity
+
+log = logging.getLogger(__name__)
+
+class ReleaseGroup(Entity):
+    __apiclass__ = "releasegroup"
+
+    def __init__(self, id, name, **kwargs):
+        self.id = id
+        self.name = name
+        self.extras = kwargs
