@@ -25,7 +25,28 @@ log = logging.getLogger(__name__)
 class ReleaseGroup(Entity):
     __apiclass__ = "releasegroup"
 
-    def __init__(self, id, name, **kwargs):
+    def __init__(self, id, name, artists=None, **kwargs):
         self.id = id
         self.name = name
+        self._rartists = artists or []
+        self._artists = None
+
         self.extras = kwargs
+
+    @property
+    def artist(self):
+        if len(self._rartists) > 0:
+            return self.artists[0]
+        else:
+            return None
+
+    @property
+    def artists(self):
+        """
+            return the artists entities for this ReleaseGroup
+        """
+        # check the cache
+        if self._artists is None:
+            self._artists = [ Entity(**artist) for artist in self._rartists ]
+
+        return self._artists
