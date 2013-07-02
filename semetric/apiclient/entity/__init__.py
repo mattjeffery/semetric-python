@@ -20,5 +20,6 @@ from semetric.apiclient.entity.base import Entity
 from semetric.apiclient.entity.artist import Artist
 from semetric.apiclient.entity.releasegroup import ReleaseGroup
 from semetric.apiclient.entity.list import List
+from semetric.apiclient.entity.chart import Chart
 
-__all__ = ['Entity', 'Artist', 'ReleaseGroup', 'List']
+__all__ = ['Entity', 'Artist', 'ReleaseGroup', 'List', 'Chart']
