@@ -24,7 +24,11 @@ from semetric.apiclient import SemetricAPI
 from semetric.apiclient.entity.base import Entity
 from semetric.apiclient.entity.artist import Artist
 from semetric.apiclient.entity.chart import Chart
-from .consts import APIKEY
+from .consts import (
+    APIKEY,
+    ARTIST_ADELE,
+    ARTIST_ADELE_ID
+)
 
 # Base string type for Python3
 if sys.version_info >= (3,): # pragma: no cover
@@ -41,7 +45,7 @@ class TestSemetricAPI(unittest2.TestCase):
             api_mock.return_value = []
             api.search(Artist, name="lady gaga")
 
-        api_mock.assert_called_once_with("artist", q="lady gaga")
+            api_mock.assert_called_once_with("artist", q="lady gaga")
 
     def test_get_request_artist(self):
 
@@ -52,7 +56,7 @@ class TestSemetricAPI(unittest2.TestCase):
             api_mock.return_value = []
             api.get(Artist, id="87e0e4ccc7f4415cbd6ba60ad49943b6")
 
-        api_mock.assert_called_once_with("artist/87e0e4ccc7f4415cbd6ba60ad49943b6")
+            api_mock.assert_called_once_with("artist/87e0e4ccc7f4415cbd6ba60ad49943b6")
 
     def test_search_request_not_implemented(self):
 
@@ -69,7 +73,7 @@ class TestSemetricAPI(unittest2.TestCase):
             api_mock.return_value = []
             api.get(Entity, id="foo")
 
-        api_mock.assert_called_once_with("entity/foo")
+            api_mock.assert_called_once_with("entity/foo")
 
     def test_get_chart_with_country(self):
 
@@ -80,7 +84,7 @@ class TestSemetricAPI(unittest2.TestCase):
             api_mock.return_value = ""
             api.get(Chart, id="0695f0bba6144dfaa390e9b9f017ceab", country="CA")
 
-        api_mock.assert_called_once_with("chart/0695f0bba6144dfaa390e9b9f017ceab", country="CA")
+            api_mock.assert_called_once_with("chart/0695f0bba6144dfaa390e9b9f017ceab", country="CA")
 
     def test_get_chart_without_country(self):
 
@@ -91,5 +95,28 @@ class TestSemetricAPI(unittest2.TestCase):
             api_mock.return_value = ""
             api.get(Chart, id="0695f0bba6144dfaa390e9b9f017ceab")
 
-        api_mock.assert_called_once_with("chart/0695f0bba6144dfaa390e9b9f017ceab", country="ALL")
+            api_mock.assert_called_once_with("chart/0695f0bba6144dfaa390e9b9f017ceab", country="ALL")
+
+    def test_get_artist_timeseries(self):
+
+        api = SemetricAPI(APIKEY)
+
+        # Make the api response
+        with patch.object(api.client, 'request', autospec=True) as api_mock:
+            api_mock.return_value = Entity(apisession=api.client, **ARTIST_ADELE)
+            artist = api.get(Artist, id=ARTIST_ADELE_ID)
+
+            assert isinstance(artist, Artist)
+
+            api_mock.assert_called_once_with("artist/e6ee861435b24f67a6283e00bf820bab")
+            api_mock.reset_mock()
+
+            artist.timeseries("plays/total")
+            api_mock.assert_called_once_with("artist/e6ee861435b24f67a6283e00bf820bab/plays/total",
+                                             country="ALL",
+                                             variant="diff",
+                                             processing="processed",
+                                             granularity="day")
+
+
 

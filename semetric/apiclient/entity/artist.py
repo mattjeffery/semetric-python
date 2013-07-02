@@ -20,6 +20,7 @@ import logging
 
 from semetric.apiclient.entity.base import Entity
 from semetric.apiclient.entity.releasegroup import ReleaseGroup
+from semetric.apiclient.entity.timeseries import DenseTimeseries
 from semetric.apiclient.util import APIRelationship
 
 log = logging.getLogger(__name__)
@@ -53,3 +54,10 @@ class Artist(Entity):
         """
         """
         return cls.__apiclass__, {"q": name}
+
+    def timeseries(self, dataset, **kwargs):
+        """
+
+        """
+        path, args = DenseTimeseries.__apiget__(self, dataset, **kwargs)
+        return self.session.request(path, **args)
