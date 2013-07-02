@@ -23,6 +23,7 @@ from mock import patch
 from semetric.apiclient import SemetricAPI
 from semetric.apiclient.entity.base import Entity
 from semetric.apiclient.entity.artist import Artist
+from semetric.apiclient.entity.chart import Chart
 from .consts import APIKEY
 
 # Base string type for Python3
@@ -31,7 +32,7 @@ if sys.version_info >= (3,): # pragma: no cover
 
 class TestSemetricAPI(unittest2.TestCase):
 
-    def test_search_request(self):
+    def test_search_request_artist(self):
 
         api = SemetricAPI(APIKEY)
 
@@ -42,7 +43,7 @@ class TestSemetricAPI(unittest2.TestCase):
 
         api_mock.assert_called_once_with("artist", q="lady gaga")
 
-    def test_get_request(self):
+    def test_get_request_artist(self):
 
         api = SemetricAPI(APIKEY)
 
@@ -69,4 +70,26 @@ class TestSemetricAPI(unittest2.TestCase):
             api.get(Entity, id="foo")
 
         api_mock.assert_called_once_with("entity/foo")
+
+    def test_get_chart_with_country(self):
+
+        api = SemetricAPI(APIKEY)
+
+        # Make the api response
+        with patch.object(api.client, 'request', autospec=True) as api_mock:
+            api_mock.return_value = ""
+            api.get(Chart, id="0695f0bba6144dfaa390e9b9f017ceab", country="CA")
+
+        api_mock.assert_called_once_with("chart/0695f0bba6144dfaa390e9b9f017ceab", country="CA")
+
+    def test_get_chart_without_country(self):
+
+        api = SemetricAPI(APIKEY)
+
+        # Make the api response
+        with patch.object(api.client, 'request', autospec=True) as api_mock:
+            api_mock.return_value = ""
+            api.get(Chart, id="0695f0bba6144dfaa390e9b9f017ceab")
+
+        api_mock.assert_called_once_with("chart/0695f0bba6144dfaa390e9b9f017ceab", country="ALL")
 

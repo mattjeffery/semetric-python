@@ -27,7 +27,7 @@ class ChartItem(Entity):
     """
         A ChartItem represents an item in a chart, each chart item is an entity, for legacy
         reasons a chart can have multiple entity types, eg. a release group chart will have
-        the expected releasegroup entity and an artist entity as well. 
+        the expected releasegroup entity and an artist entity as well.
 
         All chart items have `rank` and `value` properties.
     """
@@ -61,6 +61,7 @@ class Chart(Entity):
         self.now_id = now_id
         self.start_time = start_time
         self.previous_id = previous_id
+        self.chart_items = map(lambda x: ChartItem(**x), self.data)
 
         self.extras = kwargs
 
@@ -74,12 +75,7 @@ class Chart(Entity):
         """
             Get an item or item slice from the chart
         """
-        if isinstance(index, slice):
-            # return the entity_factory results for each item in the
-            # slice
-            return map(lambda x: ChartItem(**x), self.data[index])
-        else:
-            return ChartItem(**self.data[index])
+        return self.chart_items[index]
 
     def __iter__(self):
         """
