@@ -24,6 +24,7 @@ log = logging.getLogger(__name__)
 
 class ReleaseGroup(Entity):
     __apiclass__ = "releasegroup"
+    __apiclass_plural__ = "releasegroups"
 
     def __init__(self, id, name, artists=None, **kwargs):
         self.id = id

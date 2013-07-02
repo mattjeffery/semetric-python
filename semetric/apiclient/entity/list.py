@@ -24,6 +24,7 @@ log = logging.getLogger(__name__)
 
 class List(Entity):
     __apiclass__ = "list"
+    __apiclass_plural__ = "lists"
 
     def __init__(self, entities, **kwargs):
         self.id = None

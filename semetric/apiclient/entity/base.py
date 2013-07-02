@@ -34,6 +34,8 @@ class Entity(object):
         Base class for an entity in the Semetric API
     """
     __apiclass__ = "entity"
+    __apiclass_plural__ = "entities"
+    __subclass_mapping__ = None
 
     def __new__(cls, apisession=None, **entity_dict):
         """
@@ -99,6 +101,10 @@ class Entity(object):
     @property
     def clsname(self):
         return self.__apiclass__
+
+    @property
+    def clsname_plural(self):
+        return self.__apiclass_plural__
 
     def __init__(self, **kwargs):
         """

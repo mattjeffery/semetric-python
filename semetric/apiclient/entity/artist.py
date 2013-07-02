@@ -27,6 +27,7 @@ log = logging.getLogger(__name__)
 
 class Artist(Entity):
     __apiclass__ = "artist"
+    __apiclass_plural__ = "artists"
 
     releasegroups = APIRelationship(ReleaseGroup)
 
