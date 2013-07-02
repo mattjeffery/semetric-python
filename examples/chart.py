@@ -17,6 +17,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 import logging
+import csv
+import sys
 
 from argparse import ArgumentParser
 
@@ -30,6 +32,7 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument('--apikey', type=str, help='you semetric api key')
     parser.add_argument('--country', type=str, help='country iso code for the chart')
+    parser.add_argument('--no-header', action="store_true", help='disable the header for the csv file')
     parser.add_argument('chart_id', type=str, help='id of the chart')
     args = parser.parse_args()
 
@@ -46,7 +49,15 @@ if __name__ == "__main__":
 
     log.debug("Chart found: {0} it has the following entries".format(chart.name))
 
+    csvout = csv.writer(sys.stdout, delimiter='\t')
+
+    if not args.no_header:
+        csvout.writerow(["rank", "value", "artist_id", "artist_name", "releasegroup_id", "releasegroup_name"])
+
     for chartitem in chart:
-        print u"{0:02}: {1} -- {2}".format(chartitem.rank,
-                                           chartitem._releasegroup.artist.name,
-                                           chartitem._releasegroup.name)
+        csvout.writerow([chartitem.rank,
+                         chartitem.value,
+                         chartitem._releasegroup.artist.id,
+                         chartitem._releasegroup.artist.name,
+                         chartitem._releasegroup.id,
+                         chartitem._releasegroup.name])
