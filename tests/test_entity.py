@@ -165,6 +165,5 @@ class TestChart(unittest2.TestCase):
         assert hasattr(c[0], "_artist"), "ChartItem should have a generated artist attribute"
         assert isinstance(c[0]._releasegroup, ReleaseGroup), "the ChartItem's releasegroup should be a ReleaseGroup"
         for index, chart_item in enumerate(c, 0):
-            print chart_item, c[index]
             assert chart_item == c[index], "chart item by iteration and by index should match"
         assert len(c[:]) == len(c), "the complete slice of the chart is the same length as the chart"
