@@ -82,3 +82,21 @@ class TestMiscFunctions(unittest2.TestCase):
                 assert isinstance(rg, ReleaseGroup), "a releasegroup should have been returned"
 
         api_mock.assert_called_once_with("artist/e6ee861435b24f67a6283e00bf820bab/releasegroup/")
+
+    def test_artist_relationship_with_no_list(self):
+        apiclient = APIClient(APIKEY)
+
+        # Make the api response
+        with patch.object(apiclient, 'request', autospec=True) as api_mock:
+            # Setup artist -> releasegroup relationship
+            api_mock.return_value = [ReleaseGroup(**ADELE_RELEASE_GROUP)]
+            a = Entity(apisession=apiclient, **ARTIST_ADELE)
+            relationship = APIRelationship(ReleaseGroup, use_list=True)
+            relationship.parent = a
+
+            rg = relationship()
+            assert type(rg) is list, "a list should have been returned"
+            assert len(rg) == 1, "a list with one item should have been returned"
+            assert isinstance(rg[0], ReleaseGroup), "the item in the list should be a release group"
+
+        api_mock.assert_called_once_with("artist/e6ee861435b24f67a6283e00bf820bab/releasegroup/")
