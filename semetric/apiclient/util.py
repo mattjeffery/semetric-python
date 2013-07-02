@@ -17,6 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 import warnings
 import logging
+import collections
 
 log = logging.getLogger(__name__)
 
@@ -63,14 +64,15 @@ class APIRelationship(object):
                                                   id=self.parent.id,
                                                   rel_cls=self.related_entity.__apiclass__)
             reply = self.parent.session.request(path)
+
             if self.use_list:
-                if type(reply) is list:
+                if isinstance(reply, collections.Iterable):
                     setattr(self.parent, relation_attr, reply)
                 else:
                     # for the relationship in to a list
                     setattr(self.parent, relation_attr, [reply])
             else:
-                if type(reply) is list:
+                if isinstance(reply, collections.Iterable):
                     # force the relationship out of a list and raise a warning
                     warnings.warn("relationship was not expecting a list result, perhaps this is no a 1:1 relationship", stacklevel=2)
                     setattr(self.parent, relation_attr, reply[0] if len(reply) > 0 else None)
