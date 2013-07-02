@@ -15,6 +15,24 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+"""
+    A wrapper for the Semetric (and Musicmetric) API.
+
+    The :class:`SemetricAPI` is the main entry point for interacting the with
+    Semetric API::
+
+        >>> from semetric.apiclient import SemetricAPI
+        >>> from semetric.apiclient.entity import Artist
+
+        >>> semetricapi = SemetricAPI(apitoken)
+        >>> artist = semetricapi.get(Artist, id="fe66302b0aee49cfbd7d248403036def")
+        >>> artist.name
+        "Lady Gaga"
+
+    .. moduleauthor:: Matt Jeffery <matt@clan.se>
+
+"""
+
 import os
 
 def read(fname):
@@ -37,9 +55,16 @@ __version__ = read("VERSION.txt").strip() # stip any newlines etc
 from semetric.apiclient.client import APIClient
 
 class SemetricAPI(object):
+    """
+        The main API wrapper class for the Semetric API.
+    """
     def __init__(self, apikey, baseurl=None):
         """
-            foo
+            :param apikey: Your Semetric API key.
+            :type apikey: str
+            :param baseurl: the api instance to use.
+            :default baseurl: http://api.semetric.com
+            :type baseurl: str
         """
         self.client = APIClient(apikey, baseurl)
 
@@ -47,6 +72,14 @@ class SemetricAPI(object):
         """
             Query the API to get an Entity from the API based on id
             params.
+
+            :param entity: The entity type to query.
+            :type entity: :class:`semetric.apiclient.entity.Entity`
+            :param kwargs: extra arguments depending on the entity type.
+            :type kwargs: kwargs
+            :returns: :class:`semetric.apiclient.entity.Entity` -- the result from the query.
+            :raises: :class:`semetric.apiclient.exc.APIError`
+
         """
         # TODO: inspect apiget for arguments
         path, args = entity.__apiget__(**kwargs)
@@ -55,6 +88,13 @@ class SemetricAPI(object):
     def search(self, entity, **kwargs):
         """
             Search for Entities in using the API
+
+            :param entity: The entity type to query.
+            :type entity: :class:`semetric.apiclient.entity.Entity`
+            :param kwargs: extra arguments depending on the entity type.
+            :type kwargs: kwargs
+            :returns: :class:`semetric.apiclient.entity.Entity` -- the result from the query.
+            :raises: :class:`semetric.apiclient.exc.APIError`
         """
         path, args = entity.__apisearch__(**kwargs)
         return self.client.request(path, **args)
