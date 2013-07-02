@@ -31,9 +31,10 @@ class Artist(Entity):
 
     releasegroups = APIRelationship(ReleaseGroup)
 
-    def __init__(self, id, name, **kwargs):
+    def __init__(self, id, name, summary=None, **kwargs):
         self.id = id
         self.name = name
+        self.summary = summary or {}
         self.extras = kwargs
 
     @classmethod

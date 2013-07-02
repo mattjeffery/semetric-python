@@ -27,9 +27,15 @@ APIKEY = "652a6295aebf4b6eba986dd1581f27f9" # random api key
 EXPECT_USER_AGENT = {"User-Agent": APIClient.USER_AGENT}
 
 ARTIST_ADELE_ID = "e6ee861435b24f67a6283e00bf820bab"
-ARTIST_ADELE = {"class": "artist",
-                "id": ARTIST_ADELE_ID,
-                "name": "Adele" }
+ARTIST_ADELE =   {"class": "artist",
+                  "id": ARTIST_ADELE_ID,
+                  "name": "Adele",
+                  "summary": { "foo": "bar"},
+                  "extra": True }
+
+ARTIST_ADELE_WITH_RELEASEGROUPS = ARTIST_ADELE.copy()
+ARTIST_ADELE_WITH_RELEASEGROUPS.update({"releasegroups": [{"class": "releasegroup", "name": "foo", "id": "foo"}],
+                                        "releasegroup": {"class": "releasegroup", "name": "foo", "id": "foo"}})
 
 ARTIST_ADELE_JSON = json.dumps({"response": ARTIST_ADELE,
                            "success": True })

@@ -26,7 +26,14 @@ from semetric.apiclient.entity.list import List
 from semetric.apiclient.entity.timeseries import DenseTimeseries
 from semetric.apiclient.client import APIClient
 
-from .consts import APIKEY, ARTIST_ADELE, UNKNOWN, ARTIST_LIST, DENSE_TIMESERIES
+from .consts import (
+    APIKEY, 
+    ARTIST_ADELE,
+    UNKNOWN,
+    ARTIST_LIST,
+    DENSE_TIMESERIES,
+    ARTIST_ADELE_WITH_RELEASEGROUPS
+)
 
 class TestEntity(unittest2.TestCase):
 
@@ -102,3 +109,14 @@ class TestRelationship(unittest2.TestCase):
             a.releasegroups()
 
         api_mock.assert_called_once_with("artist/e6ee861435b24f67a6283e00bf820bab/releasegroup/")
+
+    def test_artist_relationship_cached(self):
+        apiclient = APIClient(APIKEY)
+
+        # Make the api response
+        with patch.object(apiclient, 'request', autospec=True) as api_mock:
+            api_mock.return_value = ""
+            a = Entity(apisession=apiclient, **ARTIST_ADELE_WITH_RELEASEGROUPS)
+            a.releasegroups()
+
+        assert api_mock.called == False, "the API shoud not be called"
