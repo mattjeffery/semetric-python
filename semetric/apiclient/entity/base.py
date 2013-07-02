@@ -100,6 +100,18 @@ class Entity(object):
 
         return new_entity_class
 
+    @staticmethod
+    def list_subclasses(cls):
+        """
+            List all the subclasses of a class and any subclasses of those classes
+        """
+        for subclass in cls.__subclasses__():
+            for subsubclass in Entity.list_subclasses(subclass):
+                yield subsubclass
+
+        if cls.__apiclass__:
+            yield cls
+
     @classmethod
     def subclass_mapping(cls):
         """
@@ -109,9 +121,7 @@ class Entity(object):
         if cls.__subclass_mapping__ is None:
             subclasses= dict((subclass.__apiclass__, subclass)
                               for subclass
-                              in cls.__subclasses__()
-                              if subclass.__apiclass__)
-            subclasses['entity'] = cls
+                              in Entity.list_subclasses(cls))
             cls.__subclass_mapping__ = subclasses
 
         return cls.__subclass_mapping__
