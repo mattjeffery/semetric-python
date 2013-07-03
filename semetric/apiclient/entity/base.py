@@ -36,8 +36,10 @@ class Entity(object):
     __apiclass__ = "entity"
     __apiclass_plural__ = "entities"
     __subclass_mapping__ = None
+    __primary_key__ = "id"
+    __deferrable_properties__ = []
 
-    def __new__(cls, apisession=None, supress_mapping_error=False, **entity_dict):
+    def __new__(cls, apisession=None, supress_mapping_error=False, partial=False, **entity_dict):
         """
             Create a new class for the Entity being instantiated. The class of the object being created depends
             on the class variable passed to the __new__ method, we search the list of subclasses for this class
@@ -69,6 +71,7 @@ class Entity(object):
         # Set the API Session internal variable for the entity
         new_entity_class = super(Entity, cls).__new__(entity_class)
         new_entity_class.__api_session__ = apisession
+        new_entity_class.is_partial = partial
 
 
         # Find all the APIRelationships for this isntance.
