@@ -18,7 +18,7 @@
 
 import os
 import sys
-import re
+import ast
 
 from setuptools import setup, find_packages
 
@@ -29,11 +29,36 @@ def read(fname):
     fh = None
     try:
         fh = open(os.path.join(os.path.dirname(__file__), fname))
-    except:
-        if fh:
-            fh.close()
-        raise
-    return fh.read()
+        return fh.read()
+    finally:
+        if fh: fh.close()
+
+def get_version(fname, var="__version__"):
+    """
+        Use AST to extract the Assign for the __version__ variable
+    """
+    # parse the module
+    mod = ast.parse(read(fname))
+    # check all the statements
+    for statement in mod.body:
+        # is the statement assigning something
+        if hasattr(statement, "targets") and len(statement.targets) > 0:
+            # if the target is a tuple then extract the list of actual
+            # targets from the tuple and the corisponding values
+            if hasattr(statement.targets[0], "elts"):
+                targets = statement.targets[0].elts
+                values = statement.value.elts
+            else:
+                targets = statement.targets
+                values = [statement.value]
+
+            for tidx, target in enumerate(targets):
+                # if __version__ is being set.
+                if hasattr(target, "id") and target.id == var and hasattr(values[tidx], "s"):
+                    # return the value that __version__ would be set to
+                    return values[tidx].s
+
+    return None
 
 if __name__ == "__main__":
 
@@ -57,7 +82,7 @@ if __name__ == "__main__":
 
     setup(
         name="semetric.apiclient",
-        version=read("semetric/apiclient/VERSION.txt").strip(), # remove new lines from the version string
+        version=get_version("semetric/apiclient/__init__.py"), # extract the version string from the python source
         author="Matt Jeffery",
         author_email="matt@clan.se",
         # read the install requirements from the requirements.txt
@@ -78,7 +103,6 @@ if __name__ == "__main__":
         platforms='any',
         classifiers=[
             "Development Status :: 3 - Alpha",
-            "Framework :: Setuptools Plugin",
             "Intended Audience :: Developers",
             "Operating System :: OS Independent",
             "Programming Language :: Python",

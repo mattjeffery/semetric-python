@@ -32,22 +32,6 @@
     .. moduleauthor:: Matt Jeffery <matt@clan.se>
 
 """
-
-import os
-
-def read(fname):
-    """
-        Utility function to read the README file, etc.
-    """
-    fh = None
-    try:
-        fh = open(os.path.join(os.path.dirname(__file__), fname))
-    except: # pragma: no cover
-        if fh:
-            fh.close()
-        raise
-    return fh.read()
-
 __project__ = "semetric-python"
 __author__  = "Matt Jeffery <matt@clan.se>"
 __version__ = "0.2.1"
