@@ -34,7 +34,7 @@
 """
 __project__ = "semetric-python"
 __author__  = "Matt Jeffery <matt@clan.se>"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 from semetric.apiclient.client import APIClient
 from semetric.apiclient.exc import APIError
