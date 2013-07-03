@@ -157,7 +157,31 @@ class Entity(object):
 
     @classmethod
     def __apisearch__(cls, name):
-        """
-
-        """
         raise NotImplementedError
+
+    def reload(self, **kwargs):
+        """
+            Reload the object from the API.
+        """
+        self.is_partial = False
+        primary_key_val = getattr(self, self.__primary_key__)
+
+        path, args = self.__apiget__(primary_key_val, **kwargs)
+        new_self = self.session.request(path, **args)
+        self.id = new_self.id
+        self.extras = new_self.extras
+        return new_self
+
+    def __getattribute__(self, key):
+        """
+        """
+        is_partial = object.__getattribute__(self, "is_partial")
+        deferrable_properties = object.__getattribute__(self, "__deferrable_properties__")
+
+        if key in deferrable_properties and is_partial:
+            log.debug("Requesting a reload() for an entity, `{0}' not found".format(key))
+            # Reload the API object
+            entity_reload = object.__getattribute__(self, "reload")
+            entity_reload()
+
+        return object.__getattribute__(self, key)
