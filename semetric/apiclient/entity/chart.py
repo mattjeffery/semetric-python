@@ -48,11 +48,12 @@ class Chart(Entity):
     """
     __apiclass__ = "chart"
     __apiclass_plural__ = "charts"
+    __deferrable_properties__ = ["name", "data", "period", "end_time", "data", "name", "now_id", "start_time", "previous_id", "chart_items"]
 
-    def __init__(self, data, period, end_time, name, now_id, start_time, previous_id, **kwargs):
+    def __init__(self, id, country='ALL', data=None, period=None, end_time=None, name=None, now_id=None, start_time=None, previous_id=None, **kwargs):
 
-        self.id = None
-        self.name = None
+        self.id = id
+        self.name = name
         self.data = data
         self.period= period
         self.end_time = end_time
@@ -61,7 +62,8 @@ class Chart(Entity):
         self.now_id = now_id
         self.start_time = start_time
         self.previous_id = previous_id
-        self.chart_items = map(lambda x: ChartItem(supress_mapping_error=True, **x), self.data)
+        self.country = country
+        self.chart_items = map(lambda x: ChartItem(supress_mapping_error=True, **x), self.data or [])
 
         self.extras = kwargs
 
@@ -83,6 +85,22 @@ class Chart(Entity):
         """
         for i in xrange(len(self)):
             yield self[i]
+
+    def reload(self):
+        """
+            Reload the Chart entity from the API
+        """
+        new_chart = super(Chart, self).reload(country=self.country)
+        self.name = new_chart.name
+        self.data = new_chart.data
+        self.period = new_chart.period
+        self.end_time = new_chart.end_time
+        self.data = new_chart.data
+        self.name = new_chart.name
+        self.now_id = new_chart.now_id
+        self.start_time = new_chart.start_time
+        self.previous_id = new_chart.previous_id
+        self.chart_items = map(lambda x: ChartItem(supress_mapping_error=True, **x), self.data or [])
 
     @classmethod
     def __apiget__(cls, id, country=None):
