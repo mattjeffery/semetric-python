@@ -65,10 +65,11 @@ class Artist(Entity):
     """
     __apiclass__ = "artist"
     __apiclass_plural__ = "artists"
+    __deferrable_properties__ = ["name"]
 
     releasegroups = APIRelationship(ReleaseGroup)
 
-    def __init__(self, id, name, summary=None, **kwargs):
+    def __init__(self, id, name=None, summary=None, **kwargs):
         self.id = id
         self.name = name
         self.summary = summary or {}
@@ -92,9 +93,19 @@ class Artist(Entity):
         """
         return cls.__apiclass__, {"q": name}
 
+    def reload(self):
+        """
+            Reload the object from the API.
+        """
+        new_artist = super(Artist, self).reload()
+        self.name = new_artist.name
+        self.summary = new_artist.summary
+        self.extras = new_artist.extras
+        return new_artist
+
     def timeseries(self, dataset, **kwargs):
         """
-
+            Get a Timeseries for an Artist.
         """
         path, args = DenseTimeseries.__apiget__(self, dataset, **kwargs)
         return self.session.request(path, **args)
