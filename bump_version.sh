@@ -21,7 +21,7 @@
 # default location for the version file for this project
 TOP_LEVEL_DIR=$(git rev-parse --show-toplevel 2> /dev/null) # will default to empty string ie. current directory
 MODULE_DIR="semetric/apiclient"
-DEFAULT_VERSION_FILE="${TOP_LEVEL_DIR}/${MODULE_DIR}/VERSION.txt"
+DEFAULT_VERSION_FILE="${TOP_LEVEL_DIR}/${MODULE_DIR}/__init__.py"
 
 print_usage()
 {
@@ -69,8 +69,8 @@ if [ ${GIT_REF_HEAD_ARRAY[2]} == "release" ]; then
     VERSION_GUESS=${GIT_REF_HEAD_ARRAY[3]}
 fi
 
-NEW_VERSION="${1-$VERSION_GUESS}"
-VERSION_FILE="${2-$DEFAULT_VERSION_FILE}"
+NEW_VERSION="${args[0]:-$VERSION_GUESS}"
+VERSION_FILE="${args[1]:-$DEFAULT_VERSION_FILE}"
 
 # If the version number was not found print an error
 if [ -z "${NEW_VERSION}" ]; then
@@ -85,10 +85,11 @@ if [ ! -f "$VERSION_FILE" ]; then
 fi
 
 # Get the current version
-CURRENT_VERSION=$(cat $VERSION_FILE)
+CURRENT_VERSION=$(cat $VERSION_FILE | sed -n -e '/__version__/,1p' | sed -e 's|__version__ = ["]\(.*\)["].*|\1|')
+
 BUMP_MESSAGE="Bumping version from ${CURRENT_VERSION} to ${NEW_VERSION}"
 
-echo "${NEW_VERSION}" > "${VERSION_FILE}"
+sed -i "s|__version__ = [\"]\(.*\)[\"].*|__version__ = \"${NEW_VERSION}\"|" "${VERSION_FILE}"
 echo "${BUMP_MESSAGE}"
 
-git commit "${VERSION_FILE}" -m "${BUMP_MESSAGE}" 2> /dev/null
+# git commit "${VERSION_FILE}" -m "${BUMP_MESSAGE}" 2> /dev/null

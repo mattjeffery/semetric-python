@@ -50,7 +50,7 @@ def read(fname):
 
 __project__ = "semetric-python"
 __author__  = "Matt Jeffery <matt@clan.se>"
-__version__ = read("VERSION.txt").strip() # stip any newlines etc
+__version__ = "0.2.1"
 
 from semetric.apiclient.client import APIClient
 
