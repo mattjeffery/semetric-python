@@ -31,7 +31,7 @@ from .consts import (
     ARTIST_ADELE_ID
 )
 
-# Base string type for Python3
+# Base string type for Python 3
 if sys.version_info >= (3,): # pragma: no cover
     basestring = str
 
@@ -70,7 +70,7 @@ class TestSemetricAPI(unittest2.TestCase):
             assert not api_mock.called, "the API should only be called when accessing a property that isn't cached"
 
             # The API should only be called if an unknown value is accessed
-            print a.name
+            a.name
             api_mock.assert_called_once_with("artist/87e0e4ccc7f4415cbd6ba60ad49943b6")
 
     def test_search_request_not_implemented(self):
