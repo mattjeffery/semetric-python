@@ -32,27 +32,12 @@
     .. moduleauthor:: Matt Jeffery <matt@clan.se>
 
 """
-
-import os
-
-def read(fname):
-    """
-        Utility function to read the README file, etc.
-    """
-    fh = None
-    try:
-        fh = open(os.path.join(os.path.dirname(__file__), fname))
-    except: # pragma: no cover
-        if fh:
-            fh.close()
-        raise
-    return fh.read()
-
 __project__ = "semetric-python"
 __author__  = "Matt Jeffery <matt@clan.se>"
-__version__ = read("VERSION.txt").strip() # stip any newlines etc
+__version__ = "0.2.2"
 
 from semetric.apiclient.client import APIClient
+from semetric.apiclient.exc import APIError
 
 class SemetricAPI(object):
     """
@@ -81,9 +66,11 @@ class SemetricAPI(object):
             :raises: :class:`semetric.apiclient.exc.APIError`
 
         """
-        # TODO: inspect apiget for arguments
-        path, args = entity.__apiget__(**kwargs)
-        return self.client.request(path, **args)
+
+        if not kwargs.has_key(entity.__primary_key__):
+            raise APIError("requests for {0} entities must be made with the primary key: {1}".format(entity.__class__.__name__, entity.__primary_key__))
+
+        return entity(apisession=self.client, partial=True, **kwargs)
 
     def search(self, entity, **kwargs):
         """

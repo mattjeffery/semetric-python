@@ -81,7 +81,7 @@ class TestMiscFunctions(unittest2.TestCase):
                 assert "1:1 relationship" in str(w[-1].message), "The warning should tell the user about a non-1:1 relationship"
                 assert isinstance(rg, ReleaseGroup), "a releasegroup should have been returned"
 
-        api_mock.assert_called_once_with("artist/e6ee861435b24f67a6283e00bf820bab/releasegroup/")
+            api_mock.assert_called_once_with("artist/e6ee861435b24f67a6283e00bf820bab/releasegroup/")
 
     def test_artist_relationship_with_no_list(self):
         apiclient = APIClient(APIKEY)
@@ -99,4 +99,4 @@ class TestMiscFunctions(unittest2.TestCase):
             assert len(rg) == 1, "a list with one item should have been returned"
             assert isinstance(rg[0], ReleaseGroup), "the item in the list should be a release group"
 
-        api_mock.assert_called_once_with("artist/e6ee861435b24f67a6283e00bf820bab/releasegroup/")
+            api_mock.assert_called_once_with("artist/e6ee861435b24f67a6283e00bf820bab/releasegroup/")
