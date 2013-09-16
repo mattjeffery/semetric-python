@@ -22,7 +22,7 @@ import logging
 
 # Special imports for Python 3
 if sys.version_info >= (3,): # pragma: no cover
-    from urllib.parse import urlparse, urlunparse, urlencode, parse_qs
+    from urllib.parse import urlparse, urlunparse, urlencode, parse_qs  # pylint: disable=no-name-in-module
     basestring = str
 else: # pragma: no cover
     from urllib import urlencode
