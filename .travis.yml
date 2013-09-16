@@ -15,7 +15,7 @@ env:
   - TOX_ENV=pylint
 
 install:
-  - pip install tox --use-mirrors
+  - pip install tox pylint --use-mirrors
     # Install coveralls if python>2.5
   - if [[ "${TRAVIS_PYTHON_VERSION}" != "2.5" ]]; then pip install coveralls --use-mirrors && export COVERALLS=1; fi
 
