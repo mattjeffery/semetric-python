@@ -41,3 +41,9 @@ sftp-config.json
 #VirtualEnv
 virtualenv*/
 venv/
+
+# pylint
+pylint-report*.txt
+
+# nosetest results
+tests/coverage.xml
